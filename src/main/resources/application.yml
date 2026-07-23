@@ -15,3 +15,17 @@ quarkus:
   hibernate-orm:
     schema-management:
       strategy: none
+  otel:
+    exporter:
+      otlp:
+        endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://localhost:4317}
+    sdk:
+      disabled: ${OTEL_SDK_DISABLED:true}   # true en local, false en producción
+  log:
+    level: INFO
+    console:
+      format: "%d{HH:mm:ss} %-5p [%c{2.}] [traceId=%X{traceId}] (%t) %s%e%n"
+    category:
+      "org.barbershop": DEBUG
+      "org.hibernate.SQL": DEBUG
+      "io.quarkus.bootstrap.classloading": WARN

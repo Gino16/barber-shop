@@ -51,32 +51,32 @@ CREATE TABLE customers
 -- Service bookings
 CREATE TABLE appointments
 (
-    id            SERIAL PRIMARY KEY,
-    customer_id   INTEGER REFERENCES customers (id) ON DELETE SET NULL,
-    employee_id   INTEGER REFERENCES employees (id) ON DELETE SET NULL,
-    item_id       INTEGER REFERENCES items (id),
-    scheduled_at  TIMESTAMP NOT NULL,
-    completed_at  TIMESTAMP,
-    status        VARCHAR(20) NOT NULL DEFAULT 'PENDING', -- 'PENDING', 'COMPLETED', 'CANCELLED'
-    notes         TEXT,
-    created_at    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at    TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    id           SERIAL PRIMARY KEY,
+    customer_id  INTEGER     REFERENCES customers (id) ON DELETE SET NULL,
+    employee_id  INTEGER     REFERENCES employees (id) ON DELETE SET NULL,
+    item_id      INTEGER REFERENCES items (id),
+    scheduled_at TIMESTAMP   NOT NULL,
+    completed_at TIMESTAMP,
+    status       VARCHAR(20) NOT NULL DEFAULT 'PENDING', -- 'PENDING', 'COMPLETED', 'CANCELLED'
+    notes        TEXT,
+    created_at   TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at   TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- ==================== SALES ====================
 -- Sale transactions
 CREATE TABLE sales
 (
-    id              SERIAL PRIMARY KEY,
-    customer_id     INTEGER REFERENCES customers (id) ON DELETE SET NULL,
-    employee_id     INTEGER REFERENCES employees (id) ON DELETE SET NULL,
-    sold_at         TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    total_amount    DECIMAL(10, 2) NOT NULL DEFAULT 0,
-    payment_method  VARCHAR(20) NOT NULL, -- 'CASH', 'TRANSFER', 'CARD'
-    discount        DECIMAL(10, 2) DEFAULT 0,
-    notes           TEXT,
-    created_at      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    updated_at      TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    id             SERIAL PRIMARY KEY,
+    customer_id    INTEGER        REFERENCES customers (id) ON DELETE SET NULL,
+    employee_id    INTEGER        REFERENCES employees (id) ON DELETE SET NULL,
+    sold_at        TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    total_amount   DECIMAL(10, 2) NOT NULL DEFAULT 0,
+    payment_method VARCHAR(20)    NOT NULL, -- 'CASH', 'TRANSFER', 'CARD'
+    discount       DECIMAL(10, 2)          DEFAULT 0,
+    notes          TEXT,
+    created_at     TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at     TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- ==================== SALE_ITEMS ====================
@@ -97,50 +97,50 @@ CREATE TABLE inventory
 (
     id           SERIAL PRIMARY KEY,
     item_id      INTEGER UNIQUE REFERENCES items (id) ON DELETE CASCADE,
-    quantity     INTEGER        NOT NULL DEFAULT 0,
-    min_quantity INTEGER        NOT NULL DEFAULT 5,
+    quantity     INTEGER   NOT NULL DEFAULT 0,
+    min_quantity INTEGER   NOT NULL DEFAULT 5,
     cost_price   DECIMAL(10, 2),
-    updated_at   TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP
+    updated_at   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- ==================== AUDIT_LOG ====================
 -- Auditoría de cambios
 CREATE TABLE audit_log
 (
-    id           SERIAL PRIMARY KEY,
-    entity_type  VARCHAR(50) NOT NULL, -- 'ITEM', 'CUSTOMER', 'EMPLOYEE', 'SALE', 'APPOINTMENT'
-    entity_id    INTEGER     NOT NULL,
-    action       VARCHAR(20) NOT NULL, -- 'CREATE', 'UPDATE', 'DELETE'
-    old_values   JSONB,
-    new_values   JSONB,
-    user_id      INTEGER,
-    user_name    VARCHAR(100),
-    ip_address   VARCHAR(45),
-    timestamp    TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP
+    id          SERIAL PRIMARY KEY,
+    entity_type VARCHAR(50) NOT NULL, -- 'ITEM', 'CUSTOMER', 'EMPLOYEE', 'SALE', 'APPOINTMENT'
+    entity_id   INTEGER     NOT NULL,
+    action      VARCHAR(20) NOT NULL, -- 'CREATE', 'UPDATE', 'DELETE'
+    old_values  JSONB,
+    new_values  JSONB,
+    user_id     INTEGER,
+    user_name   VARCHAR(100),
+    ip_address  VARCHAR(45),
+    timestamp   TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- ==================== DAILY_REPORTS ====================
 -- Reportería diaria
 CREATE TABLE daily_reports
 (
-    id                    SERIAL PRIMARY KEY,
-    report_date           DATE           NOT NULL UNIQUE,
-    total_sales           DECIMAL(10, 2) NOT NULL DEFAULT 0,
-    total_transactions    INTEGER        NOT NULL DEFAULT 0,
-    cash_sales            DECIMAL(10, 2) NOT NULL DEFAULT 0,
-    card_sales            DECIMAL(10, 2) NOT NULL DEFAULT 0,
-    transfer_sales        DECIMAL(10, 2) NOT NULL DEFAULT 0,
-    services_sales        DECIMAL(10, 2) NOT NULL DEFAULT 0,
-    products_sales        DECIMAL(10, 2) NOT NULL DEFAULT 0,
-    total_customers       INTEGER        NOT NULL DEFAULT 0,
-    new_customers         INTEGER        NOT NULL DEFAULT 0,
-    average_transaction   DECIMAL(10, 2),
-    top_product_id        INTEGER REFERENCES items (id) ON DELETE SET NULL,
-    top_product_name      VARCHAR(100),
-    top_product_quantity  INTEGER,
-    total_appointments    INTEGER        NOT NULL DEFAULT 0,
+    id                     SERIAL PRIMARY KEY,
+    report_date            DATE           NOT NULL UNIQUE,
+    total_sales            DECIMAL(10, 2) NOT NULL DEFAULT 0,
+    total_transactions     INTEGER        NOT NULL DEFAULT 0,
+    cash_sales             DECIMAL(10, 2) NOT NULL DEFAULT 0,
+    card_sales             DECIMAL(10, 2) NOT NULL DEFAULT 0,
+    transfer_sales         DECIMAL(10, 2) NOT NULL DEFAULT 0,
+    services_sales         DECIMAL(10, 2) NOT NULL DEFAULT 0,
+    products_sales         DECIMAL(10, 2) NOT NULL DEFAULT 0,
+    total_customers        INTEGER        NOT NULL DEFAULT 0,
+    new_customers          INTEGER        NOT NULL DEFAULT 0,
+    average_transaction    DECIMAL(10, 2),
+    top_product_id         INTEGER        REFERENCES items (id) ON DELETE SET NULL,
+    top_product_name       VARCHAR(100),
+    top_product_quantity   INTEGER,
+    total_appointments     INTEGER        NOT NULL DEFAULT 0,
     completed_appointments INTEGER        NOT NULL DEFAULT 0,
-    created_at            TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at             TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
 
 -- ==================== INDEXES ====================
