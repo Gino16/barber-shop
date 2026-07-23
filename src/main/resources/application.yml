@@ -20,7 +20,7 @@ quarkus:
       otlp:
         endpoint: ${OTEL_EXPORTER_OTLP_ENDPOINT:http://localhost:4317}
     sdk:
-      disabled: ${OTEL_SDK_DISABLED:true}   # true en local, false en producción
+      disabled: ${OTEL_SDK_DISABLED:false}   # true en local, false en producción
   log:
     level: INFO
     console:

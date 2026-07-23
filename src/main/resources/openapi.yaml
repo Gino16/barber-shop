@@ -73,7 +73,7 @@ paths:
         '201':
           description: Ítem creado
           content:
-            application/json: { schema: { $ref: '#/components/schemas/Item' } }
+            application/json: { schema: { $ref: '#/components/schemas/ItemResponse' } }
         '400':
           $ref: '#/components/responses/BadRequest'
   /items/{id}:
@@ -84,7 +84,7 @@ paths:
       tags: [Items]
       summary: Obtener un item por ID
       responses:
-        '200': { description: Ítem, content: { application/json: { schema: { $ref: '#/components/schemas/Item' } } } }
+        '200': { description: Ítem, content: { application/json: { schema: { $ref: '#/components/schemas/ItemResponse' } } } }
         '404': { $ref: '#/components/responses/NotFound' }
     put:
       operationId: updateItem
@@ -94,7 +94,7 @@ paths:
         required: true
         content: { application/json: { schema: { $ref: '#/components/schemas/ItemRequest' } } }
       responses:
-        '200': { description: Ítem actualizado, content: { application/json: { schema: { $ref: '#/components/schemas/Item' } } } }
+        '200': { description: Ítem actualizado, content: { application/json: { schema: { $ref: '#/components/schemas/ItemResponse' } } } }
         '404': { $ref: '#/components/responses/NotFound' }
         '400': { $ref: '#/components/responses/BadRequest' }
   
@@ -481,11 +481,11 @@ components:
       properties:
         data:
           type: array
-          items: { $ref: '#/components/schemas/Item' }
+          items: { $ref: '#/components/schemas/ItemResponse' }
           description: Lista de items
         pagination:
           $ref: '#/components/schemas/Pagination'
-    Item:
+    ItemResponse:
       allOf:
         - $ref: '#/components/schemas/ItemRequest'
         - type: object

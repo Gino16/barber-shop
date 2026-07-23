@@ -1,12 +1,13 @@
 package org.barbershop.item.adapter.in.rest;
 
 import org.barbershop.api.ItemsApi;
-import org.barbershop.api.model.Item;
+import org.barbershop.api.model.ItemResponse;
 import org.barbershop.api.model.ItemRequest;
 import org.barbershop.item.application.ItemCommand;
 import org.barbershop.item.application.ItemFilterQuery;
 import org.barbershop.item.application.PagedResponse;
 import org.barbershop.item.application.port.in.ItemUseCase;
+import org.barbershop.item.domain.Item;
 import org.barbershop.item.domain.Item.Category;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -35,7 +36,7 @@ public class ItemRestAdapter implements ItemsApi {
         sortDirection
     );
 
-    PagedResponse<org.barbershop.item.domain.Item> pagedResult = useCase.list(query);
+    PagedResponse<Item> pagedResult = useCase.list(query.withDefaults());
 
     PaginatedItemResponse response = new PaginatedItemResponse(
         pagedResult.data().stream().map(this::toModel).toList(),
@@ -67,20 +68,20 @@ public class ItemRestAdapter implements ItemsApi {
 
   private ItemCommand toCommand(ItemRequest r) {
     return new ItemCommand(r.getName(), r.getDescription(),
-        org.barbershop.item.domain.Item.Category.valueOf(r.getCategory().value()), r.getActive());
+        Item.Category.valueOf(r.getCategory().value()), r.getActive());
   }
 
-  private Item toModel(org.barbershop.item.domain.Item i) {
-    return new Item().id(i.id()).name(i.name()).description(i.description())
-        .category(Item.CategoryEnum.fromValue(i.category().name())).active(i.active())
+  private ItemResponse toModel(Item i) {
+    return new ItemResponse().id(i.id()).name(i.name()).description(i.description())
+        .category(ItemResponse.CategoryEnum.fromValue(i.category().name())).active(i.active())
         .createdAt(i.createdAt());
   }
 
   public static class PaginatedItemResponse {
-    public List<Item> data;
+    public List<ItemResponse> data;
     public PaginationInfo pagination;
 
-    public PaginatedItemResponse(List<Item> data, PaginationInfo pagination) {
+    public PaginatedItemResponse(List<ItemResponse> data, PaginationInfo pagination) {
       this.data = data;
       this.pagination = pagination;
     }
