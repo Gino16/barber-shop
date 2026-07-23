@@ -6,7 +6,7 @@
 *.iml
 *.iws
 *.ipr
-out/
+/out/
 
 # Eclipse
 .classpath
@@ -27,6 +27,11 @@ replay_pid*
 *.swp
 *.swo
 *~
+
+# Local environment files
+.env
+*.env.local
+devops/.env
 
 # Operating system files
 .DS_Store

@@ -1,0 +1,135 @@
+{
+  "info": {
+    "name": "Barber Shop - Lima Items",
+    "description": "Colección de items para barbería en Lima",
+    "version": "1.0.0"
+  },
+  "item": [
+    {
+      "name": "SERVICIOS HOMBRES",
+      "item": [
+        {
+          "name": "Crear Corte Colegial",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {"raw": "http://localhost:8080/api/items?page=1&pageSize=10", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "items"], "query": [{"key": "page", "value": "1"}, {"key": "pageSize", "value": "10"}]},
+            "body": {"mode": "raw", "raw": "{\"name\": \"Corte Colegial\", \"description\": \"Corte tradicional de colegial, largo uniforme con capas ligeras\", \"category\": \"SERVICE\", \"active\": true}"}
+          }
+        },
+        {
+          "name": "Crear Corte Fade",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {"raw": "http://localhost:8080/api/items?page=1&pageSize=10", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "items"], "query": [{"key": "page", "value": "1"}, {"key": "pageSize", "value": "10"}]},
+            "body": {"mode": "raw", "raw": "{\"name\": \"Corte Fade\", \"description\": \"Fade classic o moderno, degradado gradual de los lados al tope\", \"category\": \"SERVICE\", \"active\": true}"}
+          }
+        },
+        {
+          "name": "Crear Corte Undercut",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {"raw": "http://localhost:8080/api/items?page=1&pageSize=10", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "items"], "query": [{"key": "page", "value": "1"}, {"key": "pageSize", "value": "10"}]},
+            "body": {"mode": "raw", "raw": "{\"name\": \"Corte Undercut\", \"description\": \"Lados muy cortos, tope largo y definido, estilo moderno\", \"category\": \"SERVICE\", \"active\": true}"}
+          }
+        },
+        {
+          "name": "Crear Corte Degradado",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {"raw": "http://localhost:8080/api/items?page=1&pageSize=10", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "items"], "query": [{"key": "page", "value": "1"}, {"key": "pageSize", "value": "10"}]},
+            "body": {"mode": "raw", "raw": "{\"name\": \"Corte Degradado\", \"description\": \"Degradado suave de los lados manteniendo volumen en la corona\", \"category\": \"SERVICE\", \"active\": true}"}
+          }
+        },
+        {
+          "name": "Crear Corte de Barba",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {"raw": "http://localhost:8080/api/items?page=1&pageSize=10", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "items"], "query": [{"key": "page", "value": "1"}, {"key": "pageSize", "value": "10"}]},
+            "body": {"mode": "raw", "raw": "{\"name\": \"Corte de Barba\", \"description\": \"Perfilado y definición de barba, incluye limpieza de mejillas y cuello\", \"category\": \"SERVICE\", \"active\": true}"}
+          }
+        },
+        {
+          "name": "Crear Afeitado Completo",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {"raw": "http://localhost:8080/api/items?page=1&pageSize=10", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "items"], "query": [{"key": "page", "value": "1"}, {"key": "pageSize", "value": "10"}]},
+            "body": {"mode": "raw", "raw": "{\"name\": \"Afeitado Completo\", \"description\": \"Afeitado a navaja con espuma caliente y toalla húmeda\", \"category\": \"SERVICE\", \"active\": true}"}
+          }
+        }
+      ]
+    },
+    {
+      "name": "PRODUCTOS",
+      "item": [
+        {
+          "name": "Crear Pomada Fuerte",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {"raw": "http://localhost:8080/api/items?page=1&pageSize=10", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "items"], "query": [{"key": "page", "value": "1"}, {"key": "pageSize", "value": "10"}]},
+            "body": {"mode": "raw", "raw": "{\"name\": \"Pomada Fuerte\", \"description\": \"Pomada de fijación fuerte, acabado brillante, estilo clásico\", \"category\": \"PRODUCT\", \"active\": true}"}
+          }
+        },
+        {
+          "name": "Crear Gel Styling",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {"raw": "http://localhost:8080/api/items?page=1&pageSize=10", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "items"], "query": [{"key": "page", "value": "1"}, {"key": "pageSize", "value": "10"}]},
+            "body": {"mode": "raw", "raw": "{\"name\": \"Gel Styling\", \"description\": \"Gel de fijación media, acabado natural sin brillo\", \"category\": \"PRODUCT\", \"active\": true}"}
+          }
+        },
+        {
+          "name": "Crear Shampoo Premium",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {"raw": "http://localhost:8080/api/items?page=1&pageSize=10", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "items"], "query": [{"key": "page", "value": "1"}, {"key": "pageSize", "value": "10"}]},
+            "body": {"mode": "raw", "raw": "{\"name\": \"Shampoo Premium Hombre\", \"description\": \"Shampoo profesional para hombres, fórmula 2 en 1 champú + acondicionador\", \"category\": \"PRODUCT\", \"active\": true}"}
+          }
+        },
+        {
+          "name": "Crear Aceite para Barba",
+          "request": {
+            "method": "POST",
+            "header": [{"key": "Content-Type", "value": "application/json"}],
+            "url": {"raw": "http://localhost:8080/api/items?page=1&pageSize=10", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "items"], "query": [{"key": "page", "value": "1"}, {"key": "pageSize", "value": "10"}]},
+            "body": {"mode": "raw", "raw": "{\"name\": \"Aceite para Barba\", \"description\": \"Aceite hidratante y suavizante para barba, con aroma a madera\", \"category\": \"PRODUCT\", \"active\": true}"}
+          }
+        }
+      ]
+    },
+    {
+      "name": "QUERIES",
+      "item": [
+        {
+          "name": "Listar todos los servicios",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "http://localhost:8080/api/items?page=1&pageSize=100&category=SERVICE", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "items"], "query": [{"key": "page", "value": "1"}, {"key": "pageSize", "value": "100"}, {"key": "category", "value": "SERVICE"}]}
+          }
+        },
+        {
+          "name": "Listar todos los productos",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "http://localhost:8080/api/items?page=1&pageSize=100&category=PRODUCT", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "items"], "query": [{"key": "page", "value": "1"}, {"key": "pageSize", "value": "100"}, {"key": "category", "value": "PRODUCT"}]}
+          }
+        },
+        {
+          "name": "Buscar fade",
+          "request": {
+            "method": "GET",
+            "url": {"raw": "http://localhost:8080/api/items?page=1&pageSize=100&search=fade", "protocol": "http", "host": ["localhost"], "port": "8080", "path": ["api", "items"], "query": [{"key": "page", "value": "1"}, {"key": "pageSize", "value": "100"}, {"key": "search", "value": "fade"}]}
+          }
+        }
+      ]
+    }
+  ]
+}

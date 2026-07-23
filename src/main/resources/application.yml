@@ -1,2 +1,17 @@
 greeting:
   message: "hello"
+
+quarkus:
+  smallrye-openapi:
+    path: /openapi
+    info-title: Barber Shop API
+    info-version: 1.0.0
+  datasource:
+    db-kind: postgresql
+    username: ${POSTGRES_USER:barber_shop}
+    password: ${POSTGRES_PASSWORD:barber_shop}
+    jdbc:
+      url: jdbc:postgresql://${POSTGRES_HOST:localhost}:${POSTGRES_PORT:5432}/${POSTGRES_DB:barber_shop}
+  hibernate-orm:
+    schema-management:
+      strategy: none

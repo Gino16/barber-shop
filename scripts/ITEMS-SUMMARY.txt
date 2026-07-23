@@ -1,0 +1,186 @@
+📋 RESUMEN DE ITEMS PARA BARBERÍA LIMA
+=====================================
+
+🏪 SERVICIOS PARA HOMBRES (9 items)
+────────────────────────────────────
+
+1️⃣  CORTE COLEGIAL
+    └─ Corte tradicional de colegial, largo uniforme con capas ligeras
+
+2️⃣  CORTE FADE
+    └─ Fade classic o moderno, degradado gradual de los lados al tope
+
+3️⃣  CORTE UNDERCUT
+    └─ Lados muy cortos, tope largo y definido, estilo moderno
+
+4️⃣  CORTE DEGRADADO
+    └─ Degradado suave de los lados manteniendo volumen en la corona
+
+5️⃣  CORTE DE BARBA
+    └─ Perfilado y definición de barba, incluye limpieza de mejillas y cuello
+
+6️⃣  AFEITADO COMPLETO
+    └─ Afeitado a navaja con espuma caliente y toalla húmeda
+
+7️⃣  CORTE + BARBA (COMBO)
+    └─ Corte de cabello + perfilado de barba, precio especial
+
+8️⃣  TINTE/COLORACIÓN
+    └─ Coloración de cabello con productos premium, aplicación profesional
+
+9️⃣  TRATAMIENTO CAPILAR
+    └─ Hidratación y regeneración profunda, incluye masaje capilar
+
+
+👩 SERVICIOS PARA MUJERES (3 items)
+────────────────────────────────────
+
+🔟 CORTE DAMAS
+    └─ Corte personalizado para mujeres con o sin capas, según preferencia
+
+1️⃣1️⃣ ALISADO
+    └─ Alisado permanente o temporal con tratamientos de alta calidad
+
+1️⃣2️⃣ PEINADO/ESTILIZADO
+    └─ Peinado profesional para eventos especiales
+
+
+➕ SERVICIOS ADICIONALES (2 items)
+────────────────────────────────────
+
+1️⃣3️⃣ DISEÑO DE CEJAS
+    └─ Perfilado y diseño de cejas para hombres y mujeres
+
+1️⃣4️⃣ HIDRATACIÓN FACIAL
+    └─ Limpieza y hidratación facial con productos premium
+
+
+🛍️  PRODUCTOS PARA CUIDADO (10 items)
+─────────────────────────────────────
+
+1️⃣5️⃣ SHAMPOO PREMIUM HOMBRE
+    └─ Shampoo profesional para hombres, fórmula 2 en 1 champú + acondicionador
+
+1️⃣6️⃣ ACONDICIONADOR
+    └─ Acondicionador nutritivo para hidratación profunda
+
+1️⃣7️⃣ POMADA FUERTE
+    └─ Pomada de fijación fuerte, acabado brillante, estilo clásico
+
+1️⃣8️⃣ GEL STYLING
+    └─ Gel de fijación media, acabado natural sin brillo
+
+1️⃣9️⃣ SPRAY FIJADOR
+    └─ Spray para fijar peinado durante todo el día
+
+2️⃣0️⃣ ACEITE PARA BARBA
+    └─ Aceite hidratante y suavizante para barba, con aroma a madera
+
+2️⃣1️⃣ LOCIÓN AFTERSHAVE
+    └─ Loción refrescante post-afeitado, desinfectante y aromática
+
+2️⃣2️⃣ TÓNICO CAPILAR
+    └─ Tónico estimulante para crecimiento y fortaleza del cabello
+
+2️⃣3️⃣ MASCARILLA CAPILAR
+    └─ Mascarilla de tratamiento profundo para cabello seco o dañado
+
+2️⃣4️⃣ CREMA PARA PEINAR
+    └─ Crema ligera para peinar sin necesidad de agua
+
+2️⃣5️⃣ COLONIA BARBER
+    └─ Colonia clásica con aroma barbero, 100ml
+
+
+📊 ESTADÍSTICAS
+────────────────
+
+Total de Items:     24
+├─ Servicios:      14 (58.3%)
+│  ├─ Hombres:     9
+│  ├─ Mujeres:     3
+│  └─ Adicionales: 2
+└─ Productos:      10 (41.7%)
+
+Categorías:
+├─ SERVICE:  14 items
+└─ PRODUCT:  10 items
+
+Enfoque:
+├─ Hombres:  ~75%
+└─ Mujeres:  ~25%
+
+
+🚀 CARGAR DATOS
+────────────────
+
+Opción 1: SQL (PostgreSQL)
+  $ psql -U barber_shop -d barber_shop -f scripts/seed-items.sql
+
+Opción 2: CURL (API REST)
+  $ bash scripts/curl-examples.sh
+
+Opción 3: Postman
+  1. Import → scripts/postman-collection.json
+  2. Ejecutar requests desde la UI
+
+Opción 4: Manual (Un item a la vez)
+  $ curl -X POST "http://localhost:8080/api/items?page=1&pageSize=10" \
+      -H "Content-Type: application/json" \
+      -d '{"name": "...", "description": "...", "category": "SERVICE", "active": true}'
+
+
+🔍 CONSULTAS ÚTILES
+────────────────────
+
+Ver todos:
+  GET /api/items?page=1&pageSize=100
+
+Solo servicios:
+  GET /api/items?page=1&pageSize=100&category=SERVICE
+
+Solo productos:
+  GET /api/items?page=1&pageSize=100&category=PRODUCT
+
+Buscar "fade":
+  GET /api/items?page=1&pageSize=100&search=fade
+
+Buscar "pomada" en productos:
+  GET /api/items?page=1&pageSize=100&search=pomada&category=PRODUCT
+
+Ordenar por nombre:
+  GET /api/items?page=1&pageSize=50&sortBy=name&sortDirection=desc
+
+
+💾 ARCHIVOS
+────────────
+
+📄 seed-items.sql
+   └─ Inserciones SQL para PostgreSQL
+
+📄 curl-examples.sh
+   └─ Script bash con 25 ejemplos de curl
+
+📄 postman-collection.json
+   └─ Colección completa para Postman
+
+📄 README.md
+   └─ Documentación detallada
+
+📄 ITEMS-SUMMARY.txt
+   └─ Este archivo
+
+
+✨ CARACTERÍSTICAS
+────────────────
+
+✅ Datos realistas para Lima, Perú
+✅ Servicios enfocados en hombres (75%)
+✅ Opciones limitadas para mujeres (25%)
+✅ Productos de cuidado capilar y barba
+✅ Todos los items vienen activos
+✅ Descripciones en español
+✅ Categorías SERVICE y PRODUCT
+✅ Filtros y búsquedas listos para usar
+
+════════════════════════════════════════════════════════════════════════
