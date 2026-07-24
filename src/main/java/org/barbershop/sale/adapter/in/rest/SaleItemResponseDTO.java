@@ -15,4 +15,5 @@ public class SaleItemResponseDTO {
     private Long itemId;
     private Integer quantity;
     private Double unitPrice;
+    private Double subtotalAmount;
 }

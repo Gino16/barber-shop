@@ -72,7 +72,7 @@ public class SaleRestAdapter {
   private SaleResponseDTO toResponse(Sale sale) {
     List<SaleItemResponseDTO> items = sale.items().stream()
         .map(item -> new SaleItemResponseDTO(item.id(), item.saleId(), item.itemId(),
-            item.quantity(), item.unitPrice()))
+            item.quantity(), item.unitPrice(), item.subtotalAmount()))
         .toList();
     
     return new SaleResponseDTO(sale.id(), sale.customerId(), sale.employeeId(),

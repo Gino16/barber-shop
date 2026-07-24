@@ -39,7 +39,7 @@ public class DailyReportJpaEntity {
   @Column(name = "products_sales", nullable = false)
   public Double productsSales;
 
-  @Column(name = "generated_at", nullable = false)
+  @Column(name = "created_at", nullable = false)
   public LocalDateTime generatedAt;
 
   public DailyReport toDomain() {

@@ -23,37 +23,37 @@ paths:
         - name: search
           in: query
           required: false
-          schema: { type: string }
+          schema: { type: string, example: "Corte" }
           description: Buscar por nombre o descripción
         - name: category
           in: query
           required: false
-          schema: { type: string, enum: [SERVICE, PRODUCT] }
+          schema: { type: string, enum: [SERVICE, PRODUCT], example: SERVICE }
           description: Filtrar por categoría
         - name: active
           in: query
           required: false
-          schema: { type: boolean }
+          schema: { type: boolean, example: true }
           description: Filtrar por estado activo/inactivo
         - name: page
           in: query
           required: true
-          schema: { type: integer, minimum: 1 }
+          schema: { type: integer, minimum: 1, example: 1 }
           description: Número de página (1-indexed)
         - name: pageSize
           in: query
           required: true
-          schema: { type: integer, minimum: 1, maximum: 100 }
+          schema: { type: integer, minimum: 1, maximum: 100, example: 10 }
           description: Cantidad de items por página (máximo 100)
         - name: sortBy
           in: query
           required: false
-          schema: { type: string, default: "id", enum: [id, name, category, createdAt] }
+          schema: { type: string, default: "id", enum: [id, name, category, createdAt], example: name }
           description: Campo para ordenar
         - name: sortDirection
           in: query
           required: false
-          schema: { type: string, default: "asc", enum: [asc, desc] }
+          schema: { type: string, default: "asc", enum: [asc, desc], example: asc }
           description: Dirección de ordenamiento
       responses:
         '200':
@@ -78,7 +78,7 @@ paths:
           $ref: '#/components/responses/BadRequest'
   /items/{id}:
     parameters:
-      - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+      - { name: id, in: path, required: true, schema: { type: integer, format: int64, example: 1 } }
     get:
       operationId: getItem
       tags: [Items]
@@ -107,17 +107,17 @@ paths:
         - name: search
           in: query
           required: false
-          schema: { type: string }
+          schema: { type: string, example: "Juan" }
           description: Buscar por nombre o teléfono
         - name: page
           in: query
           required: true
-          schema: { type: integer, minimum: 1 }
+          schema: { type: integer, minimum: 1, example: 1 }
           description: Número de página (1-indexed)
         - name: pageSize
           in: query
           required: true
-          schema: { type: integer, minimum: 1, maximum: 100 }
+          schema: { type: integer, minimum: 1, maximum: 100, example: 10 }
           description: Cantidad de items por página (máximo 100)
       responses:
         '200':
@@ -142,7 +142,7 @@ paths:
           $ref: '#/components/responses/BadRequest'
   /customers/{id}:
     parameters:
-      - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+      - { name: id, in: path, required: true, schema: { type: integer, format: int64, example: 1 } }
     get:
       operationId: getCustomer
       tags: [Customers]
@@ -178,27 +178,27 @@ paths:
         - name: search
           in: query
           required: false
-          schema: { type: string }
+          schema: { type: string, example: "Carlos" }
           description: Buscar por nombre
         - name: role
           in: query
           required: false
-          schema: { type: string, enum: [BARBER, RECEPTIONIST, MANAGER] }
+          schema: { type: string, enum: [BARBER, STYLIST, RECEPTIONIST, MANAGER], example: BARBER }
           description: Filtrar por rol
         - name: active
           in: query
           required: false
-          schema: { type: boolean }
+          schema: { type: boolean, example: true }
           description: Filtrar por estado activo/inactivo
         - name: page
           in: query
           required: true
-          schema: { type: integer, minimum: 1 }
+          schema: { type: integer, minimum: 1, example: 1 }
           description: Número de página (1-indexed)
         - name: pageSize
           in: query
           required: true
-          schema: { type: integer, minimum: 1, maximum: 100 }
+          schema: { type: integer, minimum: 1, maximum: 100, example: 10 }
           description: Cantidad de items por página (máximo 100)
       responses:
         '200':
@@ -223,7 +223,7 @@ paths:
           $ref: '#/components/responses/BadRequest'
   /employees/{id}:
     parameters:
-      - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+      - { name: id, in: path, required: true, schema: { type: integer, format: int64, example: 1 } }
     get:
       operationId: getEmployee
       tags: [Employees]
@@ -259,37 +259,37 @@ paths:
         - name: startDate
           in: query
           required: false
-          schema: { type: string, format: date }
+          schema: { type: string, format: date, example: "2026-07-23" }
           description: Filtrar desde fecha
         - name: endDate
           in: query
           required: false
-          schema: { type: string, format: date }
+          schema: { type: string, format: date, example: "2026-07-23" }
           description: Filtrar hasta fecha
         - name: employeeId
           in: query
           required: false
-          schema: { type: integer, format: int64 }
+          schema: { type: integer, format: int64, example: 1 }
           description: Filtrar por empleado
         - name: customerId
           in: query
           required: false
-          schema: { type: integer, format: int64 }
+          schema: { type: integer, format: int64, example: 1 }
           description: Filtrar por cliente
         - name: status
           in: query
           required: false
-          schema: { type: string, enum: [SCHEDULED, IN_PROGRESS, COMPLETED, CANCELLED] }
+          schema: { type: string, enum: [SCHEDULED, PENDING, IN_PROGRESS, COMPLETED, CANCELLED], example: SCHEDULED }
           description: Filtrar por estado
         - name: page
           in: query
           required: true
-          schema: { type: integer, minimum: 1 }
+          schema: { type: integer, minimum: 1, example: 1 }
           description: Número de página (1-indexed)
         - name: pageSize
           in: query
           required: true
-          schema: { type: integer, minimum: 1, maximum: 100 }
+          schema: { type: integer, minimum: 1, maximum: 100, example: 10 }
           description: Cantidad de items por página (máximo 100)
       responses:
         '200':
@@ -314,7 +314,7 @@ paths:
           $ref: '#/components/responses/BadRequest'
   /appointments/{id}:
     parameters:
-      - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+      - { name: id, in: path, required: true, schema: { type: integer, format: int64, example: 1 } }
     get:
       operationId: getAppointment
       tags: [Appointments]
@@ -350,12 +350,12 @@ paths:
         - name: page
           in: query
           required: true
-          schema: { type: integer, minimum: 1 }
+          schema: { type: integer, minimum: 1, example: 1 }
           description: Número de página (1-indexed)
         - name: pageSize
           in: query
           required: true
-          schema: { type: integer, minimum: 1, maximum: 100 }
+          schema: { type: integer, minimum: 1, maximum: 100, example: 10 }
           description: Cantidad de items por página (máximo 100)
       responses:
         '200':
@@ -375,7 +375,7 @@ paths:
         '400': { $ref: '#/components/responses/BadRequest' }
   /sales/{id}:
     parameters:
-      - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+      - { name: id, in: path, required: true, schema: { type: integer, format: int64, example: 1 } }
     get:
       operationId: getSale
       tags: [Sales]
@@ -386,7 +386,7 @@ paths:
   
   /reports/daily/{date}:
     parameters:
-      - { name: date, in: path, required: true, schema: { type: string, format: date } }
+      - { name: date, in: path, required: true, schema: { type: string, format: date, example: "2026-07-23" } }
     get:
       operationId: getDailyReport
       tags: [Reports]
@@ -401,7 +401,7 @@ paths:
   
   /reports/daily/generate/{date}:
     parameters:
-      - { name: date, in: path, required: true, schema: { type: string, format: date } }
+      - { name: date, in: path, required: true, schema: { type: string, format: date, example: "2026-07-23" } }
     post:
       operationId: generateDailyReport
       tags: [Reports]
@@ -423,22 +423,22 @@ paths:
         - name: entityType
           in: query
           required: false
-          schema: { type: string }
+          schema: { type: string, example: "ITEM" }
           description: Filtrar por tipo de entidad
         - name: action
           in: query
           required: false
-          schema: { type: string, enum: [CREATE, UPDATE, DELETE] }
+          schema: { type: string, enum: [CREATE, UPDATE, DELETE], example: CREATE }
           description: Filtrar por acción
         - name: page
           in: query
           required: true
-          schema: { type: integer, minimum: 1 }
+          schema: { type: integer, minimum: 1, example: 1 }
           description: Número de página (1-indexed)
         - name: pageSize
           in: query
           required: true
-          schema: { type: integer, minimum: 1, maximum: 100 }
+          schema: { type: integer, minimum: 1, maximum: 100, example: 10 }
           description: Cantidad de items por página (máximo 100)
       responses:
         '200':
@@ -451,11 +451,29 @@ components:
   responses:
     NotFound:
       description: Recurso no encontrado
+      content:
+        application/json:
+          example:
+            status: 404
+            error: Not Found
+            message: Recurso no encontrado
     BadRequest:
       description: Solicitud inválida
+      content:
+        application/json:
+          example:
+            status: 400
+            error: Bad Request
+            message: Solicitud inválida
   schemas:
     Pagination:
       type: object
+      example:
+        page: 1
+        pageSize: 10
+        total: 25
+        totalPages: 3
+        hasNextPage: true
       required: [page, pageSize, total, totalPages, hasNextPage]
       properties:
         page:
@@ -477,6 +495,20 @@ components:
     # Items
     PaginatedItems:
       type: object
+      example:
+        data:
+          - id: 1
+            name: Corte Colegial
+            description: Corte tradicional de colegial, largo uniforme con capas ligeras
+            category: SERVICE
+            active: true
+            createdAt: "2026-07-23T22:36:14.241650Z"
+        pagination:
+          page: 1
+          pageSize: 10
+          total: 25
+          totalPages: 3
+          hasNextPage: true
       required: [data, pagination]
       properties:
         data:
@@ -493,8 +525,20 @@ components:
           properties:
             id: { type: integer, format: int64, readOnly: true }
             createdAt: { type: string, format: date-time, readOnly: true }
+      example:
+        id: 1
+        name: Corte Colegial
+        description: Corte tradicional de colegial, largo uniforme con capas ligeras
+        category: SERVICE
+        active: true
+        createdAt: "2026-07-23T22:36:14.241650Z"
     ItemRequest:
       type: object
+      example:
+        name: Corte Fade
+        description: Degradado gradual de los lados al tope
+        category: SERVICE
+        active: true
       required: [name, category]
       properties:
         name: { type: string, maxLength: 100, minLength: 1 }
@@ -505,6 +549,20 @@ components:
     # Customers
     PaginatedCustomers:
       type: object
+      example:
+        data:
+          - id: 1
+            name: Juan Perez
+            phone: "+57 300 123 4567"
+            email: juan.perez@example.com
+            address: Calle 10 #20-30
+            createdAt: "2026-07-23T22:36:14.241650Z"
+        pagination:
+          page: 1
+          pageSize: 10
+          total: 1
+          totalPages: 1
+          hasNextPage: false
       required: [data, pagination]
       properties:
         data:
@@ -520,8 +578,20 @@ components:
           properties:
             id: { type: integer, format: int64, readOnly: true }
             createdAt: { type: string, format: date-time, readOnly: true }
+      example:
+        id: 1
+        name: Juan Perez
+        phone: "+57 300 123 4567"
+        email: juan.perez@example.com
+        address: Calle 10 #20-30
+        createdAt: "2026-07-23T22:36:14.241650Z"
     CustomerRequest:
       type: object
+      example:
+        name: Juan Perez
+        phone: "+57 300 123 4567"
+        email: juan.perez@example.com
+        address: Calle 10 #20-30
       required: [name, phone]
       properties:
         name: { type: string, maxLength: 100, minLength: 1 }
@@ -532,6 +602,21 @@ components:
     # Employees
     PaginatedEmployees:
       type: object
+      example:
+        data:
+          - id: 1
+            name: Carlos Rodriguez
+            role: BARBER
+            phone: "+57 301 234 5678"
+            email: carlos.rodriguez@example.com
+            active: true
+            createdAt: "2026-07-23T22:36:14.241650Z"
+        pagination:
+          page: 1
+          pageSize: 10
+          total: 1
+          totalPages: 1
+          hasNextPage: false
       required: [data, pagination]
       properties:
         data:
@@ -547,12 +632,26 @@ components:
           properties:
             id: { type: integer, format: int64, readOnly: true }
             createdAt: { type: string, format: date-time, readOnly: true }
+      example:
+        id: 1
+        name: Carlos Rodriguez
+        role: BARBER
+        phone: "+57 301 234 5678"
+        email: carlos.rodriguez@example.com
+        active: true
+        createdAt: "2026-07-23T22:36:14.241650Z"
     EmployeeRequest:
       type: object
+      example:
+        name: Carlos Rodriguez
+        role: BARBER
+        phone: "+57 301 234 5678"
+        email: carlos.rodriguez@example.com
+        active: true
       required: [name, role]
       properties:
         name: { type: string, maxLength: 100, minLength: 1 }
-        role: { type: string, enum: [BARBER, RECEPTIONIST, MANAGER] }
+        role: { type: string, enum: [BARBER, STYLIST, RECEPTIONIST, MANAGER] }
         phone: { type: string, maxLength: 20 }
         email: { type: string, maxLength: 100, format: email }
         active: { type: boolean, default: true }
@@ -560,6 +659,21 @@ components:
     # Appointments
     PaginatedAppointments:
       type: object
+      example:
+        data:
+          - id: 1
+            customerId: 1
+            employeeId: 1
+            scheduledAt: "2026-07-23T14:00:00Z"
+            notes: Cliente prefiere corte fade
+            status: SCHEDULED
+            createdAt: "2026-07-23T22:36:14.241650Z"
+        pagination:
+          page: 1
+          pageSize: 10
+          total: 1
+          totalPages: 1
+          hasNextPage: false
       required: [data, pagination]
       properties:
         data:
@@ -575,19 +689,55 @@ components:
           properties:
             id: { type: integer, format: int64, readOnly: true }
             createdAt: { type: string, format: date-time, readOnly: true }
+      example:
+        id: 1
+        customerId: 1
+        employeeId: 1
+        scheduledAt: "2026-07-23T14:00:00Z"
+        notes: Cliente prefiere corte fade
+        status: SCHEDULED
+        createdAt: "2026-07-23T22:36:14.241650Z"
     AppointmentRequest:
       type: object
+      example:
+        customerId: 1
+        employeeId: 1
+        scheduledAt: "2026-07-23T14:00:00Z"
+        notes: Cliente prefiere corte fade
+        status: SCHEDULED
       required: [customerId, employeeId, scheduledAt]
       properties:
         customerId: { type: integer, format: int64 }
         employeeId: { type: integer, format: int64 }
         scheduledAt: { type: string, format: date-time }
         notes: { type: string, maxLength: 500 }
-        status: { type: string, enum: [SCHEDULED, IN_PROGRESS, COMPLETED, CANCELLED], default: SCHEDULED }
+        status: { type: string, enum: [SCHEDULED, PENDING, IN_PROGRESS, COMPLETED, CANCELLED], default: SCHEDULED }
     
     # Sales
     PaginatedSales:
       type: object
+      example:
+        data:
+          - id: 1
+            customerId: 1
+            employeeId: 1
+            paymentMethod: CASH
+            totalAmount: 50000
+            discount: 0
+            notes: Venta de servicio
+            items:
+              - id: 1
+                saleId: 1
+                itemId: 1
+                quantity: 1
+                unitPrice: 50000
+            soldAt: "2026-07-23T15:00:00Z"
+        pagination:
+          page: 1
+          pageSize: 10
+          total: 1
+          totalPages: 1
+          hasNextPage: false
       required: [data, pagination]
       properties:
         data:
@@ -597,6 +747,21 @@ components:
           $ref: '#/components/schemas/Pagination'
     Sale:
       type: object
+      example:
+        id: 1
+        customerId: 1
+        employeeId: 1
+        paymentMethod: CASH
+        totalAmount: 50000
+        discount: 0
+        notes: Venta de servicio
+        items:
+          - id: 1
+            saleId: 1
+            itemId: 1
+            quantity: 1
+            unitPrice: 50000
+        soldAt: "2026-07-23T15:00:00Z"
       required: [id, customerId, employeeId, paymentMethod, totalAmount, discount, soldAt]
       properties:
         id: { type: integer, format: int64, readOnly: true }
@@ -612,6 +777,16 @@ components:
         soldAt: { type: string, format: date-time, readOnly: true }
     SaleRequest:
       type: object
+      example:
+        customerId: 1
+        employeeId: 1
+        paymentMethod: CASH
+        discount: 0
+        notes: Venta de servicio
+        items:
+          - itemId: 1
+            quantity: 1
+            unitPrice: 50000
       required: [customerId, employeeId, paymentMethod, items]
       properties:
         customerId: { type: integer, format: int64 }
@@ -625,6 +800,10 @@ components:
           items: { $ref: '#/components/schemas/SaleItemRequest' }
     SaleItemRequest:
       type: object
+      example:
+        itemId: 1
+        quantity: 1
+        unitPrice: 50000
       required: [itemId, quantity, unitPrice]
       properties:
         itemId: { type: integer, format: int64 }
@@ -638,10 +817,28 @@ components:
           properties:
             id: { type: integer, format: int64, readOnly: true }
             saleId: { type: integer, format: int64, readOnly: true }
+      example:
+        id: 1
+        saleId: 1
+        itemId: 1
+        quantity: 1
+        unitPrice: 50000
+        subtotalAmount: 50000
     
     # Reports
     DailyReport:
       type: object
+      example:
+        id: 1
+        reportDate: "2026-07-23"
+        totalSales: 150000
+        totalTransactions: 3
+        cashSales: 50000
+        cardSales: 75000
+        transferSales: 25000
+        servicesSales: 120000
+        productsSales: 30000
+        generatedAt: "2026-07-23T23:59:59Z"
       required: [id, reportDate, totalSales, totalTransactions]
       properties:
         id: { type: integer, format: int64, readOnly: true }
@@ -658,6 +855,24 @@ components:
     # Audit Logs
     PaginatedAuditLogs:
       type: object
+      example:
+        data:
+          - id: 1
+            entityType: ITEM
+            entityId: 1
+            action: CREATE
+            oldValues: null
+            newValues:
+              name: Corte Colegial
+              category: SERVICE
+            userName: admin
+            timestamp: "2026-07-23T22:36:14.241650Z"
+        pagination:
+          page: 1
+          pageSize: 10
+          total: 1
+          totalPages: 1
+          hasNextPage: false
       required: [data, pagination]
       properties:
         data:
@@ -667,6 +882,17 @@ components:
           $ref: '#/components/schemas/Pagination'
     AuditLog:
       type: object
+      example:
+        id: 1
+        entityType: ITEM
+        entityId: 1
+        action: CREATE
+        oldValues: null
+        newValues:
+          name: Corte Colegial
+          category: SERVICE
+        userName: admin
+        timestamp: "2026-07-23T22:36:14.241650Z"
       required: [id, entityType, entityId, action, timestamp]
       properties:
         id: { type: integer, format: int64, readOnly: true }

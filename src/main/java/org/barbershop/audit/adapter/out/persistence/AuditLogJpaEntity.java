@@ -2,12 +2,14 @@ package org.barbershop.audit.adapter.out.persistence;
 
 import org.barbershop.audit.domain.AuditAction;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.persistence.*;
+import org.hibernate.annotations.ColumnTransformer;
 import java.time.LocalDateTime;
 import java.util.Map;
 
 @Entity
-@Table(name = "audit_logs")
+@Table(name = "audit_log")
 public class AuditLogJpaEntity {
 
   @Id
@@ -24,9 +26,11 @@ public class AuditLogJpaEntity {
   @Column(nullable = false)
   public AuditAction action;
 
+  @ColumnTransformer(write = "?::jsonb")
   @Column(name = "old_values", columnDefinition = "jsonb")
   public String oldValuesJson;
 
+  @ColumnTransformer(write = "?::jsonb")
   @Column(name = "new_values", columnDefinition = "jsonb")
   public String newValuesJson;
 
@@ -37,7 +41,7 @@ public class AuditLogJpaEntity {
   public LocalDateTime timestamp;
 
   @Transient
-  private static final ObjectMapper mapper = new ObjectMapper();
+  private static final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
 
   public Map<String, Object> getOldValues() {
     if (oldValuesJson == null) return null;

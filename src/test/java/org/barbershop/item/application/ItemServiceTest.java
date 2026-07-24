@@ -1,5 +1,6 @@
 package org.barbershop.item.application;
 
+import org.barbershop.audit.application.AuditLogger;
 import org.barbershop.item.application.port.out.ItemRepositoryPort;
 import org.barbershop.item.domain.Item;
 import org.junit.jupiter.api.DisplayName;
@@ -24,6 +25,9 @@ class ItemServiceTest {
 
   @Mock
   private ItemRepositoryPort repositoryPort;
+
+  @Mock
+  private AuditLogger auditLogger;
 
   @InjectMocks
   private ItemService itemService;

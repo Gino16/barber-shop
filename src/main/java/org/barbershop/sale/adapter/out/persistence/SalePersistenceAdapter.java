@@ -23,7 +23,7 @@ public class SalePersistenceAdapter implements SaleRepositoryPort {
 
   @Override
   public List<Sale> find(int offset, int pageSize) {
-    return repository.find("ORDER BY sold_at DESC")
+    return repository.find("ORDER BY soldAt DESC")
         .range(offset, offset + pageSize - 1)
         .stream()
         .map(entity -> entity.toDomain(getSaleItems(entity.id)))
@@ -72,7 +72,7 @@ public class SalePersistenceAdapter implements SaleRepositoryPort {
 
   private List<SaleItem> getSaleItems(Long saleId) {
     return em.createQuery(
-            "SELECT new org.barbershop.sale.domain.SaleItem(id, saleId, itemId, quantity, unitPrice) " +
+            "SELECT new org.barbershop.sale.domain.SaleItem(id, saleId, itemId, quantity, unitPrice, subtotalAmount) " +
             "FROM SaleItemJpaEntity WHERE saleId = ?1",
             SaleItem.class
         )
@@ -91,6 +91,7 @@ public class SalePersistenceAdapter implements SaleRepositoryPort {
       saleItem.itemId = item.itemId();
       saleItem.quantity = item.quantity();
       saleItem.unitPrice = item.unitPrice();
+      saleItem.subtotalAmount = item.quantity() * item.unitPrice();
       em.persist(saleItem);
     }
   }

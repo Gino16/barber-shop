@@ -57,7 +57,7 @@ public class AuditPersistenceAdapter implements AuditRepositoryPort {
     int paramIndex = 1;
 
     if (query.entityType() != null && !query.entityType().isBlank()) {
-      hql.append("entity_type = ?").append(paramIndex);
+      hql.append("entityType = ?").append(paramIndex);
       params = appendParam(params, query.entityType());
       paramIndex++;
     }

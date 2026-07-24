@@ -5,6 +5,7 @@ public record SaleItem(
     Long saleId,
     Long itemId,
     Integer quantity,
-    Double unitPrice
+    Double unitPrice,
+    Double subtotalAmount
 ) {
 }

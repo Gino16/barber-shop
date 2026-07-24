@@ -23,4 +23,7 @@ public class SaleItemJpaEntity {
 
   @Column(name = "unit_price", nullable = false)
   public Double unitPrice;
+
+  @Column(name = "subtotal_amount", nullable = false)
+  public Double subtotalAmount;
 }
