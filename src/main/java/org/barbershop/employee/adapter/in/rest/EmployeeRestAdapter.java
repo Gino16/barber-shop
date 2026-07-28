@@ -1,5 +1,7 @@
 package org.barbershop.employee.adapter.in.rest;
 
+import org.barbershop.api.EmployeesApi;
+import org.barbershop.api.model.EmployeeRequest;
 import org.barbershop.employee.application.EmployeeCommand;
 import org.barbershop.employee.application.EmployeeFilterQuery;
 import org.barbershop.employee.application.PagedResponse;
@@ -11,12 +13,10 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 import java.util.List;
+import org.jspecify.annotations.NonNull;
 
 @ApplicationScoped
-@Path("/employees")
-@Consumes("application/json")
-@Produces("application/json")
-public class EmployeeRestAdapter {
+public class EmployeeRestAdapter implements EmployeesApi {
 
   private final EmployeeUseCase useCase;
 
@@ -25,14 +25,14 @@ public class EmployeeRestAdapter {
     this.useCase = useCase;
   }
 
-  @GET
+  @Override
   public Response listEmployees(
-      @QueryParam("search") String search,
-      @QueryParam("role") String role,
-      @QueryParam("active") Boolean active,
-      @QueryParam("page") Integer page,
-      @QueryParam("pageSize") Integer pageSize) {
-    
+      Integer page,
+      Integer pageSize,
+      String search,
+      String role,
+      Boolean active) {
+
     EmployeeFilterQuery query = new EmployeeFilterQuery(
         search,
         role != null ? EmployeeRole.valueOf(role) : null,
@@ -40,47 +40,56 @@ public class EmployeeRestAdapter {
         page != null ? page : 1,
         pageSize != null ? pageSize : 10
     );
-    
+
     PagedResponse<Employee> pagedResult = useCase.list(query);
-    
+
     PaginatedEmployeeResponse response = new PaginatedEmployeeResponse(
         pagedResult.data().stream().map(this::toResponse).toList(),
         new PaginationInfo(pagedResult.page(), pagedResult.pageSize(), pagedResult.total(),
-                          pagedResult.totalPages(), pagedResult.hasNextPage())
+            pagedResult.totalPages(), pagedResult.hasNextPage())
     );
-    
+
     return Response.ok(response).build();
   }
 
-  @POST
-  public Response createEmployee(EmployeeRequestDTO request) {
-    Employee created = useCase.create(toCommand(request));
+  @Override
+  public Response createEmployee(EmployeeRequest request) {
+    var employeeRequestDto = toCreateEmployeeRequestDto(request);
+    Employee created = useCase.create(toCommand(employeeRequestDto));
     return Response.status(Response.Status.CREATED)
         .entity(toResponse(created)).build();
   }
 
-  @GET
-  @Path("/{id}")
-  public Response getEmployee(@PathParam("id") Long id) {
+  @Override
+  public Response getEmployee(Long id) {
     return useCase.findById(id)
         .map(e -> Response.ok(toResponse(e)).build())
         .orElseGet(() -> Response.status(Response.Status.NOT_FOUND).build());
   }
 
-  @PUT
-  @Path("/{id}")
-  public Response updateEmployee(@PathParam("id") Long id, EmployeeRequestDTO request) {
-    return useCase.update(id, toCommand(request))
+  @Override
+  public Response updateEmployee(Long id, EmployeeRequest request) {
+    var employeeRequestDto = toCreateEmployeeRequestDto(request);
+    return useCase.update(id, toCommand(employeeRequestDto))
         .map(e -> Response.ok(toResponse(e)).build())
         .orElseGet(() -> Response.status(Response.Status.NOT_FOUND).build());
   }
 
-  @DELETE
-  @Path("/{id}")
+  @Override
   public Response deleteEmployee(@PathParam("id") Long id) {
     return useCase.delete(id)
         .map(v -> Response.noContent().build())
         .orElseGet(() -> Response.status(Response.Status.NOT_FOUND).build());
+  }
+
+  private EmployeeRequestDTO toCreateEmployeeRequestDto(EmployeeRequest request) {
+    return new EmployeeRequestDTO(
+        request.getName(),
+        request.getRole().toString(),
+        request.getPhone(),
+        request.getEmail(),
+        request.getActive()
+    );
   }
 
   private EmployeeCommand toCommand(EmployeeRequestDTO dto) {
@@ -94,6 +103,7 @@ public class EmployeeRestAdapter {
   }
 
   public static class PaginatedEmployeeResponse {
+
     public List<EmployeeResponseDTO> data;
     public PaginationInfo pagination;
 
@@ -104,6 +114,7 @@ public class EmployeeRestAdapter {
   }
 
   public static class PaginationInfo {
+
     public int page;
     public int pageSize;
     public long total;

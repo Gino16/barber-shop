@@ -1,5 +1,7 @@
 package org.barbershop.sale.adapter.in.rest;
 
+import org.barbershop.api.SalesApi;
+import org.barbershop.api.model.SaleRequest;
 import org.barbershop.sale.application.PagedResponse;
 import org.barbershop.sale.application.SaleCommand;
 import org.barbershop.sale.application.SaleItemCommand;
@@ -11,12 +13,10 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 import java.util.List;
+import org.jspecify.annotations.NonNull;
 
 @ApplicationScoped
-@Path("/sales")
-@Consumes("application/json")
-@Produces("application/json")
-public class SaleRestAdapter {
+public class SaleRestAdapter implements SalesApi {
 
   private final SaleUseCase useCase;
 
@@ -25,45 +25,70 @@ public class SaleRestAdapter {
     this.useCase = useCase;
   }
 
-  @GET
+  @Override
   public Response listSales(
-      @QueryParam("page") Integer page,
-      @QueryParam("pageSize") Integer pageSize) {
-    
+      Integer page,
+      Integer pageSize) {
+
     PagedResponse<Sale> pagedResult = useCase.list(
         page != null ? page : 1,
         pageSize != null ? pageSize : 10
     );
-    
+
     PaginatedSaleResponse response = new PaginatedSaleResponse(
         pagedResult.data().stream().map(this::toResponse).toList(),
         new PaginationInfo(pagedResult.page(), pagedResult.pageSize(), pagedResult.total(),
-                          pagedResult.totalPages(), pagedResult.hasNextPage())
+            pagedResult.totalPages(), pagedResult.hasNextPage())
     );
-    
+
     return Response.ok(response).build();
   }
 
-  @POST
-  public Response createSale(SaleRequestDTO request) {
-    Sale created = useCase.create(toCommand(request));
+  @Override
+  public Response createSale(SaleRequest request) {
+
+    var requestDto = toCreateRequestDto(request);
+
+    Sale created = useCase.create(toCommand(requestDto));
     return Response.status(Response.Status.CREATED)
         .entity(toResponse(created)).build();
   }
 
-  @GET
-  @Path("/{id}")
-  public Response getSale(@PathParam("id") Long id) {
+  @Override
+  public Response getSale(Long id) {
     return useCase.findById(id)
         .map(s -> Response.ok(toResponse(s)).build())
         .orElseGet(() -> Response.status(Response.Status.NOT_FOUND).build());
   }
 
+  private SaleRequestDTO toCreateRequestDto(SaleRequest request) {
+    return new SaleRequestDTO(
+        request.getCustomerId(),
+        request.getEmployeeId(),
+        request.getPaymentMethod().toString(),
+        request.getDiscount(),
+        request.getNotes(),
+        toSaleRequestItemDtoList(request)
+    );
+  }
+
+  private List<SaleItemRequestDTO> toSaleRequestItemDtoList(SaleRequest request) {
+    return request.getItems()
+        .stream()
+        .map(saleItemRequest -> new SaleItemRequestDTO(
+            saleItemRequest.getItemId(),
+            saleItemRequest.getQuantity(),
+            saleItemRequest.getUnitPrice()
+        ))
+        .toList();
+  }
+
+
   private SaleCommand toCommand(SaleRequestDTO dto) {
     List<SaleItemCommand> items = dto.getItems().stream()
         .map(item -> new SaleItemCommand(item.getItemId(), item.getQuantity(), item.getUnitPrice()))
         .toList();
-    
+
     return new SaleCommand(dto.getCustomerId(), dto.getEmployeeId(),
         PaymentMethod.valueOf(dto.getPaymentMethod()), dto.getDiscount(),
         dto.getNotes(), items);
@@ -74,13 +99,14 @@ public class SaleRestAdapter {
         .map(item -> new SaleItemResponseDTO(item.id(), item.saleId(), item.itemId(),
             item.quantity(), item.unitPrice(), item.subtotalAmount()))
         .toList();
-    
+
     return new SaleResponseDTO(sale.id(), sale.customerId(), sale.employeeId(),
         sale.paymentMethod().name(), sale.totalAmount(), sale.discount(),
         sale.notes(), items, sale.soldAt());
   }
 
   public static class PaginatedSaleResponse {
+
     public List<SaleResponseDTO> data;
     public PaginationInfo pagination;
 
@@ -91,6 +117,7 @@ public class SaleRestAdapter {
   }
 
   public static class PaginationInfo {
+
     public int page;
     public int pageSize;
     public long total;
