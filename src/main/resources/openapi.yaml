@@ -484,6 +484,7 @@ components:
           description: Items por página
         total:
           type: integer
+          format: int64
           description: Total de items
         totalPages:
           type: integer
@@ -817,6 +818,7 @@ components:
           properties:
             id: { type: integer, format: int64, readOnly: true }
             saleId: { type: integer, format: int64, readOnly: true }
+            subtotalAmount: { type: number, format: double, readOnly: true }
       example:
         id: 1
         saleId: 1

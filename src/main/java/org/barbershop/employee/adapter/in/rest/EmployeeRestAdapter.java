@@ -2,6 +2,8 @@ package org.barbershop.employee.adapter.in.rest;
 
 import org.barbershop.api.EmployeesApi;
 import org.barbershop.api.model.EmployeeRequest;
+import org.barbershop.api.model.PaginatedEmployees;
+import org.barbershop.api.model.Pagination;
 import org.barbershop.employee.application.EmployeeCommand;
 import org.barbershop.employee.application.EmployeeFilterQuery;
 import org.barbershop.employee.application.PagedResponse;
@@ -12,8 +14,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
-import java.util.List;
-import org.jspecify.annotations.NonNull;
 
 @ApplicationScoped
 public class EmployeeRestAdapter implements EmployeesApi {
@@ -43,19 +43,21 @@ public class EmployeeRestAdapter implements EmployeesApi {
 
     PagedResponse<Employee> pagedResult = useCase.list(query);
 
-    PaginatedEmployeeResponse response = new PaginatedEmployeeResponse(
-        pagedResult.data().stream().map(this::toResponse).toList(),
-        new PaginationInfo(pagedResult.page(), pagedResult.pageSize(), pagedResult.total(),
-            pagedResult.totalPages(), pagedResult.hasNextPage())
-    );
+    PaginatedEmployees response = new PaginatedEmployees()
+        .data(pagedResult.data().stream().map(this::toResponse).toList())
+        .pagination(new Pagination()
+            .page(pagedResult.page())
+            .pageSize(pagedResult.pageSize())
+            .total(pagedResult.total())
+            .totalPages(pagedResult.totalPages())
+            .hasNextPage(pagedResult.hasNextPage()));
 
     return Response.ok(response).build();
   }
 
   @Override
   public Response createEmployee(EmployeeRequest request) {
-    var employeeRequestDto = toCreateEmployeeRequestDto(request);
-    Employee created = useCase.create(toCommand(employeeRequestDto));
+    Employee created = useCase.create(toCommand(request));
     return Response.status(Response.Status.CREATED)
         .entity(toResponse(created)).build();
   }
@@ -69,8 +71,7 @@ public class EmployeeRestAdapter implements EmployeesApi {
 
   @Override
   public Response updateEmployee(Long id, EmployeeRequest request) {
-    var employeeRequestDto = toCreateEmployeeRequestDto(request);
-    return useCase.update(id, toCommand(employeeRequestDto))
+    return useCase.update(id, toCommand(request))
         .map(e -> Response.ok(toResponse(e)).build())
         .orElseGet(() -> Response.status(Response.Status.NOT_FOUND).build());
   }
@@ -82,51 +83,19 @@ public class EmployeeRestAdapter implements EmployeesApi {
         .orElseGet(() -> Response.status(Response.Status.NOT_FOUND).build());
   }
 
-  private EmployeeRequestDTO toCreateEmployeeRequestDto(EmployeeRequest request) {
-    return new EmployeeRequestDTO(
-        request.getName(),
-        request.getRole().toString(),
-        request.getPhone(),
-        request.getEmail(),
-        request.getActive()
-    );
+  private EmployeeCommand toCommand(EmployeeRequest request) {
+    return new EmployeeCommand(request.getName(), EmployeeRole.valueOf(request.getRole().value()),
+        request.getPhone(), request.getEmail(), request.getActive());
   }
 
-  private EmployeeCommand toCommand(EmployeeRequestDTO dto) {
-    return new EmployeeCommand(dto.getName(), EmployeeRole.valueOf(dto.getRole()),
-        dto.getPhone(), dto.getEmail(), dto.getActive());
-  }
-
-  private EmployeeResponseDTO toResponse(Employee employee) {
-    return new EmployeeResponseDTO(employee.id(), employee.name(), employee.role().name(),
-        employee.phone(), employee.email(), employee.active(), employee.createdAt());
-  }
-
-  public static class PaginatedEmployeeResponse {
-
-    public List<EmployeeResponseDTO> data;
-    public PaginationInfo pagination;
-
-    public PaginatedEmployeeResponse(List<EmployeeResponseDTO> data, PaginationInfo pagination) {
-      this.data = data;
-      this.pagination = pagination;
-    }
-  }
-
-  public static class PaginationInfo {
-
-    public int page;
-    public int pageSize;
-    public long total;
-    public int totalPages;
-    public boolean hasNextPage;
-
-    public PaginationInfo(int page, int pageSize, long total, int totalPages, boolean hasNextPage) {
-      this.page = page;
-      this.pageSize = pageSize;
-      this.total = total;
-      this.totalPages = totalPages;
-      this.hasNextPage = hasNextPage;
-    }
+  private org.barbershop.api.model.Employee toResponse(Employee employee) {
+    return new org.barbershop.api.model.Employee()
+        .id(employee.id())
+        .name(employee.name())
+        .role(org.barbershop.api.model.Employee.RoleEnum.fromValue(employee.role().name()))
+        .phone(employee.phone())
+        .email(employee.email())
+        .active(employee.active())
+        .createdAt(employee.createdAt());
   }
 }
