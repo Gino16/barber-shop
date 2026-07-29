@@ -73,16 +73,7 @@ Para cada módulo:
 - `Command` - Parámetros para crear/actualizar
 - `PagedResponse` - Respuesta paginada genérica
 
-### 6. **DTOs REST (Adapters)**
-Con Lombok (@Getter @Setter @NoArgsConstructor @AllArgsConstructor):
-- `CustomerRequestDTO` / `CustomerResponseDTO`
-- `EmployeeRequestDTO` / `EmployeeResponseDTO`
-- `AppointmentRequestDTO` / `AppointmentResponseDTO`
-- `SaleRequestDTO` / `SaleResponseDTO` / `SaleItemDTO`
-- `DailyReportDTO`
-- `AuditLogDTO`
-
-### 7. **REST Adapters**
+### 6. **REST Adapters**
 Implementaciones con JAX-RS que mapean HTTP requests a UseCases:
 - `CustomerRestAdapter` - Endpoints `/customers`
 - `EmployeeRestAdapter` - Endpoints `/employees`
@@ -91,7 +82,7 @@ Implementaciones con JAX-RS que mapean HTTP requests a UseCases:
 - `ReportRestAdapter` - Endpoints `/reports`
 - `AuditRestAdapter` - Endpoints `/audit-logs`
 
-### 8. **Actualizaciones a pom.xml**
+### 7. **Actualizaciones a pom.xml**
 - Agregada dependencia de Lombok v1.18.30
 
 ## 📋 Características Implementadas

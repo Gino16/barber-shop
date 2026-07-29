@@ -1,21 +1,21 @@
 package org.barbershop.customer.adapter.in.rest;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.core.Response;
+import org.barbershop.api.CustomersApi;
+import org.barbershop.api.model.CustomerRequest;
+import org.barbershop.api.model.CustomerResponse;
+import org.barbershop.api.model.PaginatedCustomersResponse;
+import org.barbershop.api.model.PaginationResponse;
 import org.barbershop.customer.application.CustomerCommand;
 import org.barbershop.customer.application.CustomerFilterQuery;
 import org.barbershop.customer.application.PagedResponse;
 import org.barbershop.customer.application.port.in.CustomerUseCase;
 import org.barbershop.customer.domain.Customer;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.Response;
-import java.util.List;
 
 @ApplicationScoped
-@Path("/customers")
-@Consumes("application/json")
-@Produces("application/json")
-public class CustomerRestAdapter {
+public class CustomerRestAdapter implements CustomersApi {
 
   private final CustomerUseCase useCase;
 
@@ -24,92 +24,78 @@ public class CustomerRestAdapter {
     this.useCase = useCase;
   }
 
-  @GET
+  @Override
   public Response listCustomers(
-      @QueryParam("search") String search,
-      @QueryParam("page") Integer page,
-      @QueryParam("pageSize") Integer pageSize) {
-    
+      Integer page,
+      Integer pageSize,
+      String search) {
+
     CustomerFilterQuery query = new CustomerFilterQuery(
         search,
         page != null ? page : 1,
         pageSize != null ? pageSize : 10
     );
-    
+
     PagedResponse<Customer> pagedResult = useCase.list(query);
-    
-    PaginatedCustomerResponse response = new PaginatedCustomerResponse(
-        pagedResult.data().stream().map(this::toResponse).toList(),
-        new PaginationInfo(pagedResult.page(), pagedResult.pageSize(), pagedResult.total(),
-                          pagedResult.totalPages(), pagedResult.hasNextPage())
-    );
-    
+
+    PaginatedCustomersResponse response = PaginatedCustomersResponse.builder()
+        .data(pagedResult.data().stream().map(this::toResponse).toList())
+        .pagination(buildPaginationResponse(pagedResult))
+        .build();
+
     return Response.ok(response).build();
   }
 
-  @POST
-  public Response createCustomer(CustomerRequestDTO request) {
+  @Override
+  public Response createCustomer(CustomerRequest request) {
     Customer created = useCase.create(toCommand(request));
     return Response.status(Response.Status.CREATED)
         .entity(toResponse(created)).build();
   }
 
-  @GET
-  @Path("/{id}")
-  public Response getCustomer(@PathParam("id") Long id) {
+  @Override
+  public Response getCustomer(Long id) {
     return useCase.findById(id)
         .map(c -> Response.ok(toResponse(c)).build())
         .orElseGet(() -> Response.status(Response.Status.NOT_FOUND).build());
   }
 
-  @PUT
-  @Path("/{id}")
-  public Response updateCustomer(@PathParam("id") Long id, CustomerRequestDTO request) {
+  @Override
+  public Response updateCustomer(Long id, CustomerRequest request) {
     return useCase.update(id, toCommand(request))
         .map(c -> Response.ok(toResponse(c)).build())
         .orElseGet(() -> Response.status(Response.Status.NOT_FOUND).build());
   }
 
-  @DELETE
-  @Path("/{id}")
-  public Response deleteCustomer(@PathParam("id") Long id) {
+  @Override
+  public Response deleteCustomer(Long id) {
     return useCase.delete(id)
         .map(v -> Response.noContent().build())
         .orElseGet(() -> Response.status(Response.Status.NOT_FOUND).build());
   }
 
-  private CustomerCommand toCommand(CustomerRequestDTO dto) {
+  private CustomerCommand toCommand(CustomerRequest dto) {
     return new CustomerCommand(dto.getName(), dto.getPhone(), dto.getEmail(), dto.getAddress());
   }
 
-  private CustomerResponseDTO toResponse(Customer customer) {
-    return new CustomerResponseDTO(customer.id(), customer.name(), customer.phone(),
-        customer.email(), customer.address(), customer.createdAt());
+  private CustomerResponse toResponse(Customer customer) {
+    return CustomerResponse.builder()
+        .id(customer.id())
+        .name(customer.name())
+        .phone(customer.phone())
+        .email(customer.email())
+        .address(customer.address())
+        .createdAt(customer.createdAt())
+        .build();
   }
 
-  public static class PaginatedCustomerResponse {
-    public List<CustomerResponseDTO> data;
-    public PaginationInfo pagination;
-
-    public PaginatedCustomerResponse(List<CustomerResponseDTO> data, PaginationInfo pagination) {
-      this.data = data;
-      this.pagination = pagination;
-    }
-  }
-
-  public static class PaginationInfo {
-    public int page;
-    public int pageSize;
-    public long total;
-    public int totalPages;
-    public boolean hasNextPage;
-
-    public PaginationInfo(int page, int pageSize, long total, int totalPages, boolean hasNextPage) {
-      this.page = page;
-      this.pageSize = pageSize;
-      this.total = total;
-      this.totalPages = totalPages;
-      this.hasNextPage = hasNextPage;
-    }
+  private PaginationResponse buildPaginationResponse(PagedResponse<Customer> pagedResult) {
+    return PaginationResponse.builder()
+        .page(pagedResult.page())
+        .pageSize(pagedResult.pageSize())
+        .total(pagedResult.total())
+        .totalPages(pagedResult.totalPages())
+        .hasNextPage(pagedResult.hasNextPage())
+        .build();
   }
 }

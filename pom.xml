@@ -177,6 +177,7 @@
                                 <useTags>true</useTags>
                                 <dateLibrary>java8</dateLibrary>
                                 <hideGenerationTimestamp>true</hideGenerationTimestamp>
+                                <additionalModelTypeAnnotations>@lombok.NoArgsConstructor;@lombok.AllArgsConstructor;@lombok.Builder</additionalModelTypeAnnotations>
                             </configOptions>
                         </configuration>
                     </execution>

@@ -1,17 +1,18 @@
 package org.barbershop.report.adapter.in.rest;
 
-import org.barbershop.report.application.port.in.ReportUseCase;
-import org.barbershop.report.domain.DailyReport;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.*;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.Response;
 import java.time.LocalDate;
+import org.barbershop.api.ReportsApi;
+import org.barbershop.api.model.DailyReportResponse;
+import org.barbershop.report.application.port.in.ReportUseCase;
+import org.barbershop.report.domain.DailyReport;
 
 @ApplicationScoped
-@Path("/reports")
-@Produces("application/json")
-public class ReportRestAdapter {
+public class ReportRestAdapter implements ReportsApi {
 
   private final ReportUseCase useCase;
 
@@ -20,28 +21,32 @@ public class ReportRestAdapter {
     this.useCase = useCase;
   }
 
-  @GET
-  @Path("/daily/{date}")
-  public Response getDailyReport(@PathParam("date") String date) {
-    LocalDate reportDate = LocalDate.parse(date);
-    return useCase.getDailyReport(reportDate)
-        .map(report -> Response.ok(toDTO(report)).build())
+  @Override
+  public Response getDailyReport(LocalDate date) {
+    return useCase.getDailyReport(date)
+        .map(report -> Response.ok(toDailyReportResponse(report)).build())
         .orElseGet(() -> Response.status(Response.Status.NOT_FOUND).build());
   }
 
-  @POST
-  @Path("/daily/generate/{date}")
-  public Response generateDailyReport(@PathParam("date") String date) {
-    LocalDate reportDate = LocalDate.parse(date);
-    DailyReport report = useCase.generateDailyReport(reportDate);
+  @Override
+  public Response generateDailyReport(LocalDate date) {
+    DailyReport report = useCase.generateDailyReport(date);
     return Response.status(Response.Status.CREATED)
-        .entity(toDTO(report)).build();
+        .entity(toDailyReportResponse(report)).build();
   }
 
-  private DailyReportDTO toDTO(DailyReport report) {
-    return new DailyReportDTO(report.id(), report.reportDate(), report.totalSales(),
-        report.totalTransactions(), report.cashSales(), report.cardSales(),
-        report.transferSales(), report.servicesSales(), report.productsSales(),
-        report.generatedAt());
+  private DailyReportResponse toDailyReportResponse(DailyReport report) {
+    return DailyReportResponse.builder()
+        .id(report.id())
+        .reportDate(report.reportDate())
+        .totalSales(report.totalSales())
+        .totalTransactions(report.totalTransactions())
+        .cashSales(report.cashSales())
+        .cardSales(report.cardSales())
+        .transferSales(report.transferSales())
+        .servicesSales(report.servicesSales())
+        .productsSales(report.productsSales())
+        .generatedAt(report.generatedAt())
+        .build();
   }
 }

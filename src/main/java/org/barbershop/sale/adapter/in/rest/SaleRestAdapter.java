@@ -1,10 +1,11 @@
 package org.barbershop.sale.adapter.in.rest;
 
 import org.barbershop.api.SalesApi;
-import org.barbershop.api.model.PaginatedSales;
-import org.barbershop.api.model.Pagination;
+import org.barbershop.api.model.PaginatedSalesResponse;
+import org.barbershop.api.model.PaginationResponse;
 import org.barbershop.api.model.SaleRequest;
-import org.barbershop.api.model.SaleItemDetail;
+import org.barbershop.api.model.SaleItemResponse;
+import org.barbershop.api.model.SaleResponse;
 import org.barbershop.sale.application.PagedResponse;
 import org.barbershop.sale.application.SaleCommand;
 import org.barbershop.sale.application.SaleItemCommand;
@@ -36,9 +37,9 @@ public class SaleRestAdapter implements SalesApi {
         pageSize != null ? pageSize : 10
     );
 
-    PaginatedSales response = new PaginatedSales()
+    PaginatedSalesResponse response = new PaginatedSalesResponse()
         .data(pagedResult.data().stream().map(this::toResponse).toList())
-        .pagination(new Pagination()
+        .pagination(new PaginationResponse()
             .page(pagedResult.page())
             .pageSize(pagedResult.pageSize())
             .total(pagedResult.total())
@@ -71,12 +72,12 @@ public class SaleRestAdapter implements SalesApi {
             .toList());
   }
 
-  private org.barbershop.api.model.Sale toResponse(Sale sale) {
-    return new org.barbershop.api.model.Sale()
+  private SaleResponse toResponse(Sale sale) {
+    return new SaleResponse()
         .id(sale.id())
         .customerId(sale.customerId())
         .employeeId(sale.employeeId())
-        .paymentMethod(org.barbershop.api.model.Sale.PaymentMethodEnum
+        .paymentMethod(SaleResponse.PaymentMethodEnum
             .fromValue(sale.paymentMethod().name()))
         .totalAmount(sale.totalAmount())
         .discount(sale.discount())
@@ -85,8 +86,8 @@ public class SaleRestAdapter implements SalesApi {
         .soldAt(sale.soldAt());
   }
 
-  private SaleItemDetail toResponse(org.barbershop.sale.domain.SaleItem item) {
-    return new SaleItemDetail()
+  private SaleItemResponse toResponse(org.barbershop.sale.domain.SaleItem item) {
+    return new SaleItemResponse()
         .id(item.id())
         .saleId(item.saleId())
         .itemId(item.itemId())

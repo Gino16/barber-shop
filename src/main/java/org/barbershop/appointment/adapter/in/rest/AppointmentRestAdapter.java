@@ -1,23 +1,24 @@
 package org.barbershop.appointment.adapter.in.rest;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.core.Response;
+import java.time.LocalDate;
+import org.barbershop.api.AppointmentsApi;
+import org.barbershop.api.model.AppointmentRequest;
+import org.barbershop.api.model.AppointmentResponse;
+import org.barbershop.api.model.PaginatedAppointmentsResponse;
+import org.barbershop.api.model.PaginationResponse;
 import org.barbershop.appointment.application.AppointmentCommand;
 import org.barbershop.appointment.application.AppointmentFilterQuery;
 import org.barbershop.appointment.application.PagedResponse;
 import org.barbershop.appointment.application.port.in.AppointmentUseCase;
 import org.barbershop.appointment.domain.Appointment;
 import org.barbershop.appointment.domain.AppointmentStatus;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.ws.rs.*;
-import jakarta.ws.rs.core.Response;
-import java.time.LocalDate;
-import java.util.List;
 
 @ApplicationScoped
-@Path("/appointments")
-@Consumes("application/json")
-@Produces("application/json")
-public class AppointmentRestAdapter {
+public class AppointmentRestAdapter implements AppointmentsApi {
 
   private final AppointmentUseCase useCase;
 
@@ -26,103 +27,90 @@ public class AppointmentRestAdapter {
     this.useCase = useCase;
   }
 
-  @GET
+  @Override
   public Response listAppointments(
-      @QueryParam("startDate") String startDate,
-      @QueryParam("endDate") String endDate,
-      @QueryParam("employeeId") Long employeeId,
-      @QueryParam("customerId") Long customerId,
-      @QueryParam("status") String status,
-      @QueryParam("page") Integer page,
-      @QueryParam("pageSize") Integer pageSize) {
-    
+      Integer page,
+      Integer pageSize,
+      LocalDate startDate,
+      LocalDate endDate,
+      Long employeeId,
+      Long customerId,
+      String status) {
+
     AppointmentFilterQuery query = new AppointmentFilterQuery(
-        startDate != null ? LocalDate.parse(startDate) : null,
-        endDate != null ? LocalDate.parse(endDate) : null,
+        startDate,
+        endDate,
         employeeId,
         customerId,
         status != null ? AppointmentStatus.valueOf(status) : null,
         page != null ? page : 1,
         pageSize != null ? pageSize : 10
     );
-    
+
     PagedResponse<Appointment> pagedResult = useCase.list(query);
-    
-    PaginatedAppointmentResponse response = new PaginatedAppointmentResponse(
-        pagedResult.data().stream().map(this::toResponse).toList(),
-        new PaginationInfo(pagedResult.page(), pagedResult.pageSize(), pagedResult.total(),
-                          pagedResult.totalPages(), pagedResult.hasNextPage())
-    );
-    
+
+    PaginatedAppointmentsResponse response = PaginatedAppointmentsResponse.builder()
+        .data(pagedResult.data().stream().map(this::toResponse).toList())
+        .pagination(buildPaginationResponse(pagedResult))
+        .build();
+
     return Response.ok(response).build();
   }
 
-  @POST
-  public Response createAppointment(AppointmentRequestDTO request) {
+  @Override
+  public Response createAppointment(AppointmentRequest request) {
     Appointment created = useCase.create(toCommand(request));
     return Response.status(Response.Status.CREATED)
         .entity(toResponse(created)).build();
   }
 
-  @GET
-  @Path("/{id}")
-  public Response getAppointment(@PathParam("id") Long id) {
+  @Override
+  public Response getAppointment(Long id) {
     return useCase.findById(id)
         .map(a -> Response.ok(toResponse(a)).build())
         .orElseGet(() -> Response.status(Response.Status.NOT_FOUND).build());
   }
 
-  @PUT
-  @Path("/{id}")
-  public Response updateAppointment(@PathParam("id") Long id, AppointmentRequestDTO request) {
+  @Override
+  public Response updateAppointment(Long id, AppointmentRequest request) {
     return useCase.update(id, toCommand(request))
         .map(a -> Response.ok(toResponse(a)).build())
         .orElseGet(() -> Response.status(Response.Status.NOT_FOUND).build());
   }
 
-  @DELETE
-  @Path("/{id}")
-  public Response deleteAppointment(@PathParam("id") Long id) {
+  @Override
+  public Response deleteAppointment(Long id) {
     return useCase.delete(id)
         .map(v -> Response.noContent().build())
         .orElseGet(() -> Response.status(Response.Status.NOT_FOUND).build());
   }
 
-  private AppointmentCommand toCommand(AppointmentRequestDTO dto) {
+  private AppointmentCommand toCommand(AppointmentRequest dto) {
     return new AppointmentCommand(dto.getCustomerId(), dto.getEmployeeId(),
         dto.getScheduledAt(), dto.getNotes(),
-        dto.getStatus() != null ? AppointmentStatus.valueOf(dto.getStatus()) : null);
+        dto.getStatus() != null ? AppointmentStatus.valueOf(dto.getStatus().name()) : null);
   }
 
-  private AppointmentResponseDTO toResponse(Appointment appointment) {
-    return new AppointmentResponseDTO(appointment.id(), appointment.customerId(),
-        appointment.employeeId(), appointment.scheduledAt(), appointment.notes(),
-        appointment.status().name(), appointment.createdAt());
+  private AppointmentResponse toResponse(Appointment appointment) {
+    return AppointmentResponse.builder()
+        .id(appointment.id())
+        .customerId(appointment.customerId())
+        .employeeId(appointment.employeeId())
+        .scheduledAt(appointment.scheduledAt())
+        .notes(appointment.notes())
+        .status(AppointmentResponse.StatusEnum.valueOf(appointment.status().name()))
+        .createdAt(appointment.createdAt())
+        .build();
   }
 
-  public static class PaginatedAppointmentResponse {
-    public List<AppointmentResponseDTO> data;
-    public PaginationInfo pagination;
-
-    public PaginatedAppointmentResponse(List<AppointmentResponseDTO> data, PaginationInfo pagination) {
-      this.data = data;
-      this.pagination = pagination;
-    }
-  }
-
-  public static class PaginationInfo {
-    public int page;
-    public int pageSize;
-    public long total;
-    public int totalPages;
-    public boolean hasNextPage;
-
-    public PaginationInfo(int page, int pageSize, long total, int totalPages, boolean hasNextPage) {
-      this.page = page;
-      this.pageSize = pageSize;
-      this.total = total;
-      this.totalPages = totalPages;
-      this.hasNextPage = hasNextPage;
-    }
+  private PaginationResponse buildPaginationResponse(
+      PagedResponse<Appointment> pagedResult) {
+    return PaginationResponse.builder()
+        .page(pagedResult.page())
+        .pageSize(pagedResult.pageSize())
+        .total(pagedResult.total())
+        .totalPages(pagedResult.totalPages())
+        .hasNextPage(pagedResult.hasNextPage())
+        .build();
   }
 }
