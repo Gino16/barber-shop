@@ -4,7 +4,11 @@
 
 Comprehensive unit test suite siguiendo **Quarkus standards**, **JUnit 5**, **Mockito**, con patrón **AAA** (Arrange-Act-Assert), principios **KISS** y **YAGNI**.
 
-**Cobertura: 22 tests unitarios ligeros sin mini-servers**
+**Cobertura: 185 tests unitarios ligeros sin mini-servers**
+
+La suite cubre los servicios de aplicación, filtros de consulta, adaptadores REST,
+adaptadores de persistencia, auditoría y el filtro de trazabilidad. Las entidades
+JPA y los modelos de dominio se excluyen por ser modelos de datos.
 
 ---
 
@@ -170,7 +174,7 @@ void testSomething() {
 [INFO] Running PagedResponse Tests
 [INFO] Tests run: 5, Failures: 0, Errors: 0 ✅
 
-TOTAL: 22 tests ✅ 0 failures ✅
+TOTAL: 185 tests ✅ 0 failures ✅
 ```
 
 ---
@@ -192,7 +196,6 @@ mvn test -Dtest=ItemServiceTest#shouldReturnCreatedItemWhenCreateCalled
 
 ## 💡 Próximos Pasos
 
-- [ ] REST Adapter tests (sin @QuarkusTest para ser ligeros)
 - [ ] Validación de entrada en ItemCommand
 - [ ] Error handling y custom exceptions
 - [ ] Integration tests (separado de unit tests)
