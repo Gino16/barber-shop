@@ -4,7 +4,6 @@ import org.barbershop.employee.domain.Employee;
 import org.barbershop.employee.domain.EmployeeRole;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
 @Entity

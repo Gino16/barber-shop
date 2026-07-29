@@ -1,12 +1,12 @@
 package org.barbershop.report.adapter.out.persistence;
 
-import org.barbershop.report.application.port.out.ReportRepositoryPort;
-import org.barbershop.report.domain.DailyReport;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.Optional;
+import org.barbershop.report.application.port.out.ReportRepositoryPort;
+import org.barbershop.report.domain.DailyReport;
 
 @ApplicationScoped
 @Transactional

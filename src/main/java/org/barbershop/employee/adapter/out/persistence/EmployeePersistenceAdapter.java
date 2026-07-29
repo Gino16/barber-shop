@@ -1,14 +1,14 @@
 package org.barbershop.employee.adapter.out.persistence;
 
-import org.barbershop.employee.application.EmployeeFilterQuery;
-import org.barbershop.employee.application.port.out.EmployeeRepositoryPort;
-import org.barbershop.employee.domain.Employee;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import org.barbershop.employee.application.EmployeeFilterQuery;
+import org.barbershop.employee.application.port.out.EmployeeRepositoryPort;
+import org.barbershop.employee.domain.Employee;
 
 @ApplicationScoped
 @Transactional
@@ -71,27 +71,29 @@ public class EmployeePersistenceAdapter implements EmployeeRepositoryPort {
     if (query.search() != null && !query.search().isBlank()) {
       hql.append("name ILIKE ?").append(paramIndex).append(" OR phone ILIKE ?").append(paramIndex)
           .append(" OR email ILIKE ?").append(paramIndex);
-      params = new Object[] {"%" + query.search() + "%"};
+      params = new Object[]{"%" + query.search() + "%"};
       paramIndex++;
     }
 
     if (query.role() != null) {
-      if (hql.length() > 0) hql.append(" AND ");
+      if (!hql.isEmpty()) {
+        hql.append(" AND ");
+      }
       hql.append("role = ?").append(paramIndex);
       params = appendParam(params, query.role());
       paramIndex++;
     }
 
     if (query.active() != null) {
-      if (hql.length() > 0) hql.append(" AND ");
+      if (!hql.isEmpty()) {
+        hql.append(" AND ");
+      }
       hql.append("is_active = ?").append(paramIndex);
       params = appendParam(params, query.active());
       paramIndex++;
     }
 
-    PanacheQuery<EmployeeJpaEntity> q =
-        hql.length() == 0 ? repository.findAll() : repository.find(hql.toString(), params);
-    return q;
+    return hql.isEmpty() ? repository.findAll() : repository.find(hql.toString(), params);
   }
 
   private Object[] appendParam(Object[] params, Object newParam) {

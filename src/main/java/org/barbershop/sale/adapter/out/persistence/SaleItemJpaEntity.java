@@ -1,8 +1,6 @@
 package org.barbershop.sale.adapter.out.persistence;
 
-import org.barbershop.sale.domain.PaymentMethod;
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "sale_items")

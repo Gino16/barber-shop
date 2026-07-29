@@ -3,7 +3,6 @@ package org.barbershop.customer.adapter.out.persistence;
 import org.barbershop.customer.domain.Customer;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
 @Entity

@@ -14,7 +14,6 @@ import org.barbershop.sale.domain.PaymentMethod;
 import org.barbershop.sale.domain.Sale;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.Response;
 
 @ApplicationScoped

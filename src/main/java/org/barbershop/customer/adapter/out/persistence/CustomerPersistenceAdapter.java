@@ -74,8 +74,6 @@ public class CustomerPersistenceAdapter implements CustomerRepositoryPort {
       paramIndex++;
     }
 
-    PanacheQuery<CustomerJpaEntity> q =
-        hql.length() == 0 ? repository.findAll() : repository.find(hql.toString(), params);
-    return q;
+    return hql.isEmpty() ?  repository.findAll() : repository.find(hql.toString(), params);
   }
 }

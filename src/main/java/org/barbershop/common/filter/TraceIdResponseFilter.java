@@ -6,7 +6,7 @@ import org.jboss.resteasy.reactive.server.ServerResponseFilter;
 
 /**
  * Expone el traceId de OpenTelemetry en el header X-Trace-ID de cada respuesta.
- *
+ * <p>
  * Usa @ServerResponseFilter (quarkus-rest reactivo) en lugar de
  * ContainerResponseFilter (JAX-RS clásico) para que el Span activo
  * sea accesible correctamente en el contexto reactivo.

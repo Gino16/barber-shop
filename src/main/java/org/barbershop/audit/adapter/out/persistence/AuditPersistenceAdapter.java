@@ -7,7 +7,6 @@ import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 
@@ -63,14 +62,14 @@ public class AuditPersistenceAdapter implements AuditRepositoryPort {
     }
 
     if (query.action() != null) {
-      if (hql.length() > 0) hql.append(" AND ");
+      if (!hql.isEmpty()) hql.append(" AND ");
       hql.append("action = ?").append(paramIndex);
       params = appendParam(params, query.action());
       paramIndex++;
     }
 
     PanacheQuery<AuditLogJpaEntity> q =
-        hql.length() == 0 ? repository.findAll() : repository.find(hql.toString(), params);
+        hql.isEmpty() ?  repository.findAll() : repository.find(hql.toString(), params);
     return q;
   }
 

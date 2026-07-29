@@ -75,36 +75,34 @@ public class AppointmentPersistenceAdapter implements AppointmentRepositoryPort 
     }
 
     if (query.endDate() != null) {
-      if (hql.length() > 0) hql.append(" AND ");
+      if (!hql.isEmpty()) hql.append(" AND ");
       hql.append("CAST(scheduled_at AS date) <= ?").append(paramIndex);
       params = appendParam(params, query.endDate());
       paramIndex++;
     }
 
     if (query.employeeId() != null) {
-      if (hql.length() > 0) hql.append(" AND ");
+      if (!hql.isEmpty()) hql.append(" AND ");
       hql.append("employee_id = ?").append(paramIndex);
       params = appendParam(params, query.employeeId());
       paramIndex++;
     }
 
     if (query.customerId() != null) {
-      if (hql.length() > 0) hql.append(" AND ");
+      if (!hql.isEmpty()) hql.append(" AND ");
       hql.append("customer_id = ?").append(paramIndex);
       params = appendParam(params, query.customerId());
       paramIndex++;
     }
 
     if (query.status() != null) {
-      if (hql.length() > 0) hql.append(" AND ");
+      if (!hql.isEmpty()) hql.append(" AND ");
       hql.append("status = ?").append(paramIndex);
       params = appendParam(params, query.status());
       paramIndex++;
     }
 
-    PanacheQuery<AppointmentJpaEntity> q =
-        hql.length() == 0 ? repository.findAll() : repository.find(hql.toString(), params);
-    return q;
+    return hql.isEmpty() ? repository.findAll() : repository.find(hql.toString(), params);
   }
 
   private Object[] appendParam(Object[] params, Object newParam) {

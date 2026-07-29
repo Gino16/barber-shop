@@ -5,7 +5,6 @@ import org.barbershop.sale.domain.SaleItem;
 import org.barbershop.sale.domain.PaymentMethod;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
 

@@ -1,14 +1,14 @@
 package org.barbershop.item.adapter.out.persistence;
 
-import org.barbershop.item.application.ItemFilterQuery;
-import org.barbershop.item.application.port.out.ItemRepositoryPort;
-import org.barbershop.item.domain.Item;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import org.barbershop.item.application.ItemFilterQuery;
+import org.barbershop.item.application.port.out.ItemRepositoryPort;
+import org.barbershop.item.domain.Item;
 
 @ApplicationScoped
 public class ItemPersistenceAdapter implements ItemRepositoryPort {
@@ -66,27 +66,31 @@ public class ItemPersistenceAdapter implements ItemRepositoryPort {
     int paramIndex = 1;
 
     if (query.search() != null && !query.search().isBlank()) {
-      hql.append("name ILIKE ?").append(paramIndex).append(" OR description ILIKE ?").append(paramIndex);
-      params = new Object[] {"%" + query.search() + "%"};
+      hql.append("name ILIKE ?").append(paramIndex).append(" OR description ILIKE ?")
+          .append(paramIndex);
+      params = new Object[]{"%" + query.search() + "%"};
       paramIndex++;
     }
 
     if (query.category() != null) {
-      if (hql.length() > 0) hql.append(" AND ");
+      if (!hql.isEmpty()) {
+        hql.append(" AND ");
+      }
       hql.append("category = ?").append(paramIndex);
       params = appendParam(params, query.category().name());
       paramIndex++;
     }
 
     if (query.active() != null) {
-      if (hql.length() > 0) hql.append(" AND ");
+      if (!hql.isEmpty()) {
+        hql.append(" AND ");
+      }
       hql.append("is_active = ?").append(paramIndex);
       params = appendParam(params, query.active());
       paramIndex++;
     }
 
-    PanacheQuery<ItemJpaEntity> q = hql.length() == 0 ? panache.findAll() : panache.find(hql.toString(), params);
-    return q;
+    return hql.isEmpty() ? panache.findAll() : panache.find(hql.toString(), params);
   }
 
   private Object[] appendParam(Object[] params, Object newParam) {

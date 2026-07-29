@@ -1,15 +1,14 @@
 package org.barbershop.sale.adapter.out.persistence;
 
-import org.barbershop.sale.application.port.out.SaleRepositoryPort;
-import org.barbershop.sale.domain.Sale;
-import org.barbershop.sale.domain.SaleItem;
-import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import org.barbershop.sale.application.port.out.SaleRepositoryPort;
+import org.barbershop.sale.domain.Sale;
+import org.barbershop.sale.domain.SaleItem;
 
 @ApplicationScoped
 @Transactional
@@ -72,8 +71,9 @@ public class SalePersistenceAdapter implements SaleRepositoryPort {
 
   private List<SaleItem> getSaleItems(Long saleId) {
     return em.createQuery(
-            "SELECT new org.barbershop.sale.domain.SaleItem(id, saleId, itemId, quantity, unitPrice, subtotalAmount) " +
-            "FROM SaleItemJpaEntity WHERE saleId = ?1",
+            "SELECT new org.barbershop.sale.domain.SaleItem(id, saleId, itemId, quantity, unitPrice, subtotalAmount) "
+                +
+                "FROM SaleItemJpaEntity WHERE saleId = ?1",
             SaleItem.class
         )
         .setParameter(1, saleId)

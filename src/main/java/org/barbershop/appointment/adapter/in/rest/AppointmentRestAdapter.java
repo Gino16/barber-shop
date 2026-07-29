@@ -2,7 +2,6 @@ package org.barbershop.appointment.adapter.in.rest;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.core.Response;
 import java.time.LocalDate;
 import org.barbershop.api.AppointmentsApi;

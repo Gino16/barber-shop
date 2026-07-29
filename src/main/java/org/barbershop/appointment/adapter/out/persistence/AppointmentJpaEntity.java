@@ -4,7 +4,6 @@ import org.barbershop.appointment.domain.Appointment;
 import org.barbershop.appointment.domain.AppointmentStatus;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 
 @Entity
