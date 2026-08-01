@@ -3,7 +3,7 @@ package org.barbershop.employee.adapter.in.rest;
 import jakarta.ws.rs.core.Response;
 import org.barbershop.api.model.EmployeeRequest;
 import org.barbershop.employee.application.EmployeeFilterQuery;
-import org.barbershop.employee.application.PagedResponse;
+import org.barbershop.common.pagination.PagedResponse;
 import org.barbershop.employee.application.port.in.EmployeeUseCase;
 import org.barbershop.employee.domain.Employee;
 import org.barbershop.employee.domain.EmployeeRole;

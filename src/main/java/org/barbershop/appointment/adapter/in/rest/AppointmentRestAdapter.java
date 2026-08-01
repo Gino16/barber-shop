@@ -11,7 +11,7 @@ import org.barbershop.api.model.PaginatedAppointmentsResponse;
 import org.barbershop.api.model.PaginationResponse;
 import org.barbershop.appointment.application.AppointmentCommand;
 import org.barbershop.appointment.application.AppointmentFilterQuery;
-import org.barbershop.appointment.application.PagedResponse;
+import org.barbershop.common.pagination.PagedResponse;
 import org.barbershop.appointment.application.port.in.AppointmentUseCase;
 import org.barbershop.appointment.domain.Appointment;
 import org.barbershop.appointment.domain.AppointmentStatus;

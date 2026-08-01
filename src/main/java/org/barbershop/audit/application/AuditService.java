@@ -3,6 +3,7 @@ package org.barbershop.audit.application;
 import org.barbershop.audit.application.port.in.AuditUseCase;
 import org.barbershop.audit.application.port.out.AuditRepositoryPort;
 import org.barbershop.audit.domain.AuditLog;
+import org.barbershop.common.pagination.PagedResponse;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 

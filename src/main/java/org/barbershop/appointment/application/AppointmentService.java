@@ -6,6 +6,7 @@ import org.barbershop.appointment.application.port.in.AppointmentUseCase;
 import org.barbershop.appointment.application.port.out.AppointmentRepositoryPort;
 import org.barbershop.appointment.domain.Appointment;
 import org.barbershop.appointment.domain.AppointmentStatus;
+import org.barbershop.common.pagination.PagedResponse;
 import org.barbershop.customer.application.port.out.CustomerRepositoryPort;
 import org.barbershop.employee.application.port.out.EmployeeRepositoryPort;
 import jakarta.enterprise.context.ApplicationScoped;

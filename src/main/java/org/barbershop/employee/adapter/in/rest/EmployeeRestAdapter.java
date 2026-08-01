@@ -11,7 +11,7 @@ import org.barbershop.api.model.PaginatedEmployeesResponse;
 import org.barbershop.api.model.PaginationResponse;
 import org.barbershop.employee.application.EmployeeCommand;
 import org.barbershop.employee.application.EmployeeFilterQuery;
-import org.barbershop.employee.application.PagedResponse;
+import org.barbershop.common.pagination.PagedResponse;
 import org.barbershop.employee.application.port.in.EmployeeUseCase;
 import org.barbershop.employee.domain.Employee;
 import org.barbershop.employee.domain.EmployeeRole;

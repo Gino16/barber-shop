@@ -2,6 +2,7 @@ package org.barbershop.item.application;
 
 import org.barbershop.audit.application.AuditLogger;
 import org.barbershop.audit.domain.AuditAction;
+import org.barbershop.common.pagination.PagedResponse;
 import org.barbershop.item.application.port.in.ItemUseCase;
 import org.barbershop.item.application.port.out.ItemRepositoryPort;
 import org.barbershop.item.domain.Item;
@@ -27,10 +28,9 @@ public class ItemService implements ItemUseCase {
 
   @Override
   public PagedResponse<Item> list(ItemFilterQuery query) {
-    ItemFilterQuery validatedQuery = query.withDefaults();
-    var items = repository.find(validatedQuery);
-    long total = repository.count(validatedQuery);
-    return new PagedResponse<>(items, validatedQuery.page(), validatedQuery.pageSize(), total);
+    var items = repository.find(query);
+    long total = repository.count(query);
+    return new PagedResponse<>(items, query.page(), query.pageSize(), total);
   }
 
   @Override

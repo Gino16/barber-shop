@@ -2,7 +2,7 @@ package org.barbershop.employee.application.port.in;
 
 import org.barbershop.employee.application.EmployeeCommand;
 import org.barbershop.employee.application.EmployeeFilterQuery;
-import org.barbershop.employee.application.PagedResponse;
+import org.barbershop.common.pagination.PagedResponse;
 import org.barbershop.employee.domain.Employee;
 import java.util.Optional;
 

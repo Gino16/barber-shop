@@ -1,4 +1,4 @@
-package org.barbershop.customer.application;
+package org.barbershop.common.pagination;
 
 import java.util.List;
 

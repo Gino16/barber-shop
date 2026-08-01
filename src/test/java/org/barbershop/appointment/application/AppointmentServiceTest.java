@@ -1,5 +1,6 @@
 package org.barbershop.appointment.application;
 
+import org.barbershop.common.pagination.PagedResponse;
 import jakarta.ws.rs.NotFoundException;
 import org.barbershop.audit.application.AuditLogger;
 import org.barbershop.appointment.application.port.out.AppointmentRepositoryPort;

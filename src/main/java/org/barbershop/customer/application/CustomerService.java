@@ -2,6 +2,7 @@ package org.barbershop.customer.application;
 
 import org.barbershop.audit.application.AuditLogger;
 import org.barbershop.audit.domain.AuditAction;
+import org.barbershop.common.pagination.PagedResponse;
 import org.barbershop.customer.application.port.in.CustomerUseCase;
 import org.barbershop.customer.application.port.out.CustomerRepositoryPort;
 import org.barbershop.customer.domain.Customer;

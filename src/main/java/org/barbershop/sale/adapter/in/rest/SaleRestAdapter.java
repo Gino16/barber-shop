@@ -6,7 +6,7 @@ import org.barbershop.api.model.PaginationResponse;
 import org.barbershop.api.model.SaleRequest;
 import org.barbershop.api.model.SaleItemResponse;
 import org.barbershop.api.model.SaleResponse;
-import org.barbershop.sale.application.PagedResponse;
+import org.barbershop.common.pagination.PagedResponse;
 import org.barbershop.sale.application.SaleCommand;
 import org.barbershop.sale.application.SaleItemCommand;
 import org.barbershop.sale.application.port.in.SaleUseCase;

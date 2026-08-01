@@ -2,7 +2,7 @@ package org.barbershop.appointment.application.port.in;
 
 import org.barbershop.appointment.application.AppointmentCommand;
 import org.barbershop.appointment.application.AppointmentFilterQuery;
-import org.barbershop.appointment.application.PagedResponse;
+import org.barbershop.common.pagination.PagedResponse;
 import org.barbershop.appointment.domain.Appointment;
 import java.util.Optional;
 

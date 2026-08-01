@@ -1,5 +1,6 @@
 package org.barbershop.item.application;
 
+import org.barbershop.common.pagination.PagedResponse;
 import org.barbershop.audit.application.AuditLogger;
 import org.barbershop.item.application.port.out.ItemRepositoryPort;
 import org.barbershop.item.domain.Item;

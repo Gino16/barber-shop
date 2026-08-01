@@ -3,7 +3,7 @@ package org.barbershop.item.adapter.in.rest;
 import jakarta.ws.rs.core.Response;
 import org.barbershop.api.model.ItemRequest;
 import org.barbershop.item.application.ItemFilterQuery;
-import org.barbershop.item.application.PagedResponse;
+import org.barbershop.common.pagination.PagedResponse;
 import org.barbershop.item.application.port.in.ItemUseCase;
 import org.barbershop.item.domain.Item;
 import org.junit.jupiter.api.DisplayName;

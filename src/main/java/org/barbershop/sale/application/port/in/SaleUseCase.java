@@ -1,6 +1,6 @@
 package org.barbershop.sale.application.port.in;
 
-import org.barbershop.sale.application.PagedResponse;
+import org.barbershop.common.pagination.PagedResponse;
 import org.barbershop.sale.application.SaleCommand;
 import org.barbershop.sale.domain.Sale;
 import java.util.Optional;

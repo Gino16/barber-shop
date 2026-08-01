@@ -1,5 +1,6 @@
 package org.barbershop.item.application;
 
+import org.barbershop.common.pagination.PagedResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

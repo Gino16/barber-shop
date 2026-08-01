@@ -2,7 +2,7 @@ package org.barbershop.audit.adapter.in.rest;
 
 import jakarta.ws.rs.core.Response;
 import org.barbershop.audit.application.AuditFilterQuery;
-import org.barbershop.audit.application.PagedResponse;
+import org.barbershop.common.pagination.PagedResponse;
 import org.barbershop.audit.application.port.in.AuditUseCase;
 import org.barbershop.audit.domain.AuditAction;
 import org.barbershop.audit.domain.AuditLog;

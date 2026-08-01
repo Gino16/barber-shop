@@ -3,7 +3,7 @@ package org.barbershop.sale.adapter.in.rest;
 import jakarta.ws.rs.core.Response;
 import org.barbershop.api.model.SaleItemRequest;
 import org.barbershop.api.model.SaleRequest;
-import org.barbershop.sale.application.PagedResponse;
+import org.barbershop.common.pagination.PagedResponse;
 import org.barbershop.sale.application.port.in.SaleUseCase;
 import org.barbershop.sale.domain.PaymentMethod;
 import org.barbershop.sale.domain.Sale;
