@@ -1,5 +1,7 @@
 package org.barbershop.report.adapter.in.rest;
 
+import static org.barbershop.common.utils.Constants.LIMA_ZONE;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response;
@@ -44,7 +46,7 @@ public class ReportRestAdapter implements ReportsApi {
         .transferSales(report.transferSales())
         .servicesSales(report.servicesSales())
         .productsSales(report.productsSales())
-        .generatedAt(report.generatedAt())
+        .generatedAt(report.generatedAt().atZoneSameInstant(LIMA_ZONE).toOffsetDateTime())
         .build();
   }
 }

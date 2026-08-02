@@ -1,5 +1,7 @@
 package org.barbershop.customer.adapter.in.rest;
 
+import static org.barbershop.common.utils.Constants.LIMA_ZONE;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response;
@@ -85,7 +87,7 @@ public class CustomerRestAdapter implements CustomersApi {
         .phone(customer.phone())
         .email(customer.email())
         .address(customer.address())
-        .createdAt(customer.createdAt())
+        .createdAt(customer.createdAt().atZoneSameInstant(LIMA_ZONE).toOffsetDateTime())
         .build();
   }
 

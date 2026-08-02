@@ -1,5 +1,7 @@
 package org.barbershop.item.adapter.in.rest;
 
+import static org.barbershop.common.utils.Constants.LIMA_ZONE;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response;
@@ -79,7 +81,7 @@ public class ItemRestAdapter implements ItemsApi {
         .id(i.id()).name(i.name()).description(i.description())
         .category(ItemResponse.CategoryEnum.fromValue(i.category().name()))
         .price(i.price()).active(i.active())
-        .createdAt(i.createdAt())
+        .createdAt(i.createdAt().atZoneSameInstant(LIMA_ZONE).toOffsetDateTime())
         .build();
   }
 

@@ -1,5 +1,7 @@
 package org.barbershop.audit.adapter.in.rest;
 
+import static org.barbershop.common.utils.Constants.LIMA_ZONE;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response;
@@ -57,7 +59,7 @@ public class AuditRestAdapter implements AuditLogsApi {
         .oldValues(log.oldValues())
         .newValues(log.newValues())
         .userName(log.userName())
-        .timestamp(log.timestamp())
+        .timestamp(log.timestamp().atZoneSameInstant(LIMA_ZONE).toOffsetDateTime())
         .build();
   }
 

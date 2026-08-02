@@ -1,5 +1,7 @@
 package org.barbershop.sale.adapter.in.rest;
 
+import static org.barbershop.common.utils.Constants.LIMA_ZONE;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response;
@@ -81,7 +83,7 @@ public class SaleRestAdapter implements SalesApi {
         .discount(sale.discount())
         .notes(sale.notes())
         .items(sale.items().stream().map(this::toResponse).toList())
-        .soldAt(sale.soldAt());
+        .soldAt(sale.soldAt().atZoneSameInstant(LIMA_ZONE).toOffsetDateTime());
   }
 
   private SaleItemResponse toResponse(org.barbershop.sale.domain.SaleItem item) {

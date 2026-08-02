@@ -1,9 +1,12 @@
 package org.barbershop.appointment.adapter.in.rest;
 
+import static org.barbershop.common.utils.Constants.LIMA_ZONE;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import org.barbershop.api.AppointmentsApi;
 import org.barbershop.api.model.AppointmentRequest;
 import org.barbershop.api.model.AppointmentResponse;
@@ -85,7 +88,8 @@ public class AppointmentRestAdapter implements AppointmentsApi {
   }
 
   private AppointmentCommand toCommand(AppointmentRequest dto) {
-    return new AppointmentCommand(dto.getCustomerId(), dto.getEmployeeId(),
+    return new AppointmentCommand(
+        dto.getCustomerId(), dto.getEmployeeId(),
         dto.getScheduledAt(), dto.getNotes(),
         dto.getStatus() != null ? AppointmentStatus.valueOf(dto.getStatus().name()) : null);
   }
@@ -95,10 +99,10 @@ public class AppointmentRestAdapter implements AppointmentsApi {
         .id(appointment.id())
         .customerId(appointment.customerId())
         .employeeId(appointment.employeeId())
-        .scheduledAt(appointment.scheduledAt())
+        .scheduledAt(appointment.scheduledAt().atZoneSameInstant(LIMA_ZONE).toOffsetDateTime())
         .notes(appointment.notes())
         .status(AppointmentResponse.StatusEnum.valueOf(appointment.status().name()))
-        .createdAt(appointment.createdAt())
+        .createdAt(appointment.createdAt().atZoneSameInstant(LIMA_ZONE).toOffsetDateTime())
         .build();
   }
 
