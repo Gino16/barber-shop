@@ -1,11 +1,5 @@
 package org.barbershop.customer.application;
 
-import org.barbershop.audit.application.AuditLogger;
-import org.barbershop.audit.domain.AuditAction;
-import org.barbershop.common.pagination.PagedResponse;
-import org.barbershop.customer.application.port.in.CustomerUseCase;
-import org.barbershop.customer.application.port.out.CustomerRepositoryPort;
-import org.barbershop.customer.domain.Customer;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import java.time.OffsetDateTime;
@@ -13,6 +7,12 @@ import java.time.ZoneOffset;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
+import org.barbershop.audit.application.AuditLogger;
+import org.barbershop.audit.domain.AuditAction;
+import org.barbershop.common.pagination.PagedResponse;
+import org.barbershop.customer.application.port.in.CustomerUseCase;
+import org.barbershop.customer.application.port.out.CustomerRepositoryPort;
+import org.barbershop.customer.domain.Customer;
 
 @ApplicationScoped
 public class CustomerService implements CustomerUseCase {
@@ -41,8 +41,9 @@ public class CustomerService implements CustomerUseCase {
 
   @Override
   public Customer create(CustomerCommand command) {
-    Customer created = repository.save(new Customer(null, command.name(), command.phone(), command.email(),
-        command.address(), OffsetDateTime.now(ZoneOffset.UTC)));
+    Customer created = repository.save(
+        new Customer(null, command.name(), command.phone(), command.email(),
+            command.address(), OffsetDateTime.now(ZoneOffset.UTC)));
     auditLogger.record("CUSTOMER", created.id(), AuditAction.CREATE, null, values(created));
     return created;
   }
@@ -53,7 +54,8 @@ public class CustomerService implements CustomerUseCase {
         .map(existing -> {
           Customer updated = repository.save(new Customer(existing.id(), command.name(),
               command.phone(), command.email(), command.address(), existing.createdAt()));
-          auditLogger.record("CUSTOMER", updated.id(), AuditAction.UPDATE, values(existing), values(updated));
+          auditLogger.record("CUSTOMER", updated.id(), AuditAction.UPDATE, values(existing),
+              values(updated));
           return updated;
         });
   }

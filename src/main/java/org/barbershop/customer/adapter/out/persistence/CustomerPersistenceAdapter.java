@@ -1,14 +1,14 @@
 package org.barbershop.customer.adapter.out.persistence;
 
-import org.barbershop.customer.application.CustomerFilterQuery;
-import org.barbershop.customer.application.port.out.CustomerRepositoryPort;
-import org.barbershop.customer.domain.Customer;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import org.barbershop.customer.application.CustomerFilterQuery;
+import org.barbershop.customer.application.port.out.CustomerRepositoryPort;
+import org.barbershop.customer.domain.Customer;
 
 @ApplicationScoped
 @Transactional
@@ -19,7 +19,7 @@ public class CustomerPersistenceAdapter implements CustomerRepositoryPort {
 
   @Override
   public List<Customer> find(CustomerFilterQuery query) {
-    return buildQuery(query.withDefaults())
+    return buildQuery(query)
         .range(query.offset(), query.offset() + query.pageSize() - 1)
         .stream()
         .map(CustomerJpaEntity::toDomain)
@@ -28,7 +28,7 @@ public class CustomerPersistenceAdapter implements CustomerRepositoryPort {
 
   @Override
   public long count(CustomerFilterQuery query) {
-    return buildQuery(query.withDefaults()).count();
+    return buildQuery(query).count();
   }
 
   @Override
@@ -68,12 +68,16 @@ public class CustomerPersistenceAdapter implements CustomerRepositoryPort {
     int paramIndex = 1;
 
     if (query.search() != null && !query.search().isBlank()) {
-      hql.append("name ILIKE ?").append(paramIndex).append(" OR phone ILIKE ?").append(paramIndex)
-          .append(" OR email ILIKE ?").append(paramIndex);
-      params = new Object[] {"%" + query.search() + "%"};
+      hql.append("name ILIKE ?")
+          .append(paramIndex)
+          .append(" OR phone ILIKE ?")
+          .append(paramIndex)
+          .append(" OR email ILIKE ?")
+          .append(paramIndex);
+      params = new Object[]{"%" + query.search() + "%"};
       paramIndex++;
     }
 
-    return hql.isEmpty() ?  repository.findAll() : repository.find(hql.toString(), params);
+    return hql.isEmpty() ? repository.findAll() : repository.find(hql.toString(), params);
   }
 }
