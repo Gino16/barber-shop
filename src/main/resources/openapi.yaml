@@ -96,7 +96,8 @@ paths:
       responses:
         '200': { description: Ítem actualizado, content: { application/json: { schema: { $ref: '#/components/schemas/ItemResponse' } } } }
         '404': { $ref: '#/components/responses/NotFound' }
-        '400': { $ref: '#/components/responses/BadRequest' }
+        '400':
+          $ref: '#/components/responses/BadRequest'
   
   /customers:
     get:
@@ -160,7 +161,8 @@ paths:
       responses:
         '200': { description: Cliente actualizado, content: { application/json: { schema: { $ref: '#/components/schemas/CustomerResponse' } } } }
         '404': { $ref: '#/components/responses/NotFound' }
-        '400': { $ref: '#/components/responses/BadRequest' }
+        '400':
+          $ref: '#/components/responses/BadRequest'
     delete:
       operationId: deleteCustomer
       tags: [Customers]
@@ -372,7 +374,22 @@ paths:
         content: { application/json: { schema: { $ref: '#/components/schemas/SaleRequest' } } }
       responses:
         '201': { description: Venta creada, content: { application/json: { schema: { $ref: '#/components/schemas/SaleResponse' } } } }
-        '400': { $ref: '#/components/responses/BadRequest' }
+        '400':
+          description: Datos de venta inválidos
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ErrorResponse' }
+              examples:
+                itemNotFound:
+                  value: { status: 400, error: Bad Request, message: El ítem no existe }
+                inactiveItem:
+                  value: { status: 400, error: Bad Request, message: El ítem está inactivo }
+                invalidQuantity:
+                  value: { status: 400, error: Bad Request, message: La cantidad debe ser mayor que cero }
+                invalidDiscount:
+                  value: { status: 400, error: Bad Request, message: El descuento es inválido }
+                inconsistentData:
+                  value: { status: 400, error: Bad Request, message: Datos de venta inconsistentes }
   /sales/{id}:
     parameters:
       - { name: id, in: path, required: true, schema: { type: integer, format: int64, example: 1 } }
@@ -466,6 +483,13 @@ components:
             error: Bad Request
             message: Solicitud inválida
   schemas:
+    ErrorResponse:
+      type: object
+      required: [status, error, message]
+      properties:
+        status: { type: integer, example: 400 }
+        error: { type: string, example: Bad Request }
+        message: { type: string, example: Solicitud inválida }
     PaginationResponse:
       type: object
       example:
@@ -502,6 +526,7 @@ components:
             name: Corte Colegial
             description: Corte tradicional de colegial, largo uniforme con capas ligeras
             category: SERVICE
+            price: 50000
             active: true
             createdAt: "2026-07-23T22:36:14.241650Z"
         pagination:
@@ -531,6 +556,7 @@ components:
         name: Corte Colegial
         description: Corte tradicional de colegial, largo uniforme con capas ligeras
         category: SERVICE
+        price: 50000
         active: true
         createdAt: "2026-07-23T22:36:14.241650Z"
     ItemRequest:
@@ -539,12 +565,14 @@ components:
         name: Corte Fade
         description: Degradado gradual de los lados al tope
         category: SERVICE
+        price: 50000
         active: true
-      required: [name, category]
+      required: [name, category, price]
       properties:
         name: { type: string, maxLength: 100, minLength: 1 }
         description: { type: string, maxLength: 500 }
         category: { type: string, enum: [SERVICE, PRODUCT] }
+        price: { type: number, format: decimal, minimum: 0 }
         active: { type: boolean, default: true }
     
     # Customers
@@ -732,6 +760,7 @@ components:
                 itemId: 1
                 quantity: 1
                 unitPrice: 50000
+                subtotalAmount: 50000
             soldAt: "2026-07-23T15:00:00Z"
         pagination:
           page: 1
@@ -762,6 +791,7 @@ components:
             itemId: 1
             quantity: 1
             unitPrice: 50000
+            subtotalAmount: 50000
         soldAt: "2026-07-23T15:00:00Z"
       required: [id, customerId, employeeId, paymentMethod, totalAmount, discount, soldAt]
       properties:
@@ -769,8 +799,8 @@ components:
         customerId: { type: integer, format: int64 }
         employeeId: { type: integer, format: int64 }
         paymentMethod: { type: string, enum: [CASH, TRANSFER, CARD] }
-        totalAmount: { type: number, format: double, readOnly: true }
-        discount: { type: number, format: double, default: 0 }
+        totalAmount: { type: number, format: decimal, minimum: 0, readOnly: true }
+        discount: { type: number, format: decimal, minimum: 0, default: 0 }
         notes: { type: string, maxLength: 500 }
         items:
           type: array
@@ -787,13 +817,12 @@ components:
         items:
           - itemId: 1
             quantity: 1
-            unitPrice: 50000
       required: [customerId, employeeId, paymentMethod, items]
       properties:
         customerId: { type: integer, format: int64 }
         employeeId: { type: integer, format: int64 }
         paymentMethod: { type: string, enum: [CASH, TRANSFER, CARD] }
-        discount: { type: number, format: double, default: 0 }
+        discount: { type: number, format: decimal, minimum: 0, default: 0 }
         notes: { type: string, maxLength: 500 }
         items:
           type: array
@@ -804,21 +833,20 @@ components:
       example:
         itemId: 1
         quantity: 1
-        unitPrice: 50000
-      required: [itemId, quantity, unitPrice]
+      required: [itemId, quantity]
       properties:
         itemId: { type: integer, format: int64 }
         quantity: { type: integer, minimum: 1 }
-        unitPrice: { type: number, format: double, minimum: 0 }
     SaleItemResponse:
-      allOf:
-        - $ref: '#/components/schemas/SaleItemRequest'
-        - type: object
-          required: [id, saleId]
-          properties:
-            id: { type: integer, format: int64, readOnly: true }
-            saleId: { type: integer, format: int64, readOnly: true }
-            subtotalAmount: { type: number, format: double, readOnly: true }
+      type: object
+      required: [id, saleId, itemId, quantity, unitPrice, subtotalAmount]
+      properties:
+        id: { type: integer, format: int64, readOnly: true }
+        saleId: { type: integer, format: int64, readOnly: true }
+        itemId: { type: integer, format: int64, readOnly: true }
+        quantity: { type: integer, minimum: 1 }
+        unitPrice: { type: number, format: decimal, minimum: 0, readOnly: true }
+        subtotalAmount: { type: number, format: decimal, minimum: 0, readOnly: true }
       example:
         id: 1
         saleId: 1

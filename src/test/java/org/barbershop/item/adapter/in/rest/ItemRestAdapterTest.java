@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -35,7 +36,7 @@ class ItemRestAdapterTest {
   private static final OffsetDateTime NOW = OffsetDateTime.now(ZoneOffset.UTC);
 
   private Item sampleItem() {
-    return new Item(1L, "Corte", "Corte de cabello", Item.Category.SERVICE, true, NOW);
+    return new Item(1L, "Corte", "Corte de cabello", Item.Category.SERVICE, BigDecimal.TEN, true, NOW);
   }
 
   private ItemRequest sampleRequest() {
@@ -43,6 +44,7 @@ class ItemRestAdapterTest {
     req.setName("Corte");
     req.setDescription("Corte de cabello");
     req.setCategory(ItemRequest.CategoryEnum.SERVICE);
+    req.setPrice(BigDecimal.valueOf(50000));
     req.setActive(true);
     return req;
   }

@@ -61,6 +61,7 @@ Los estados válidos de una cita son `SCHEDULED`, `PENDING`, `IN_PROGRESS`, `COM
   "name": "Corte clásico",
   "description": "Servicio de barbería",
   "category": "SERVICE",
+  "price": 50000,
   "active": true
 }
 ```
@@ -113,14 +114,16 @@ Los estados válidos de una cita son `SCHEDULED`, `PENDING`, `IN_PROGRESS`, `COM
     {
       "itemId": 1,
       "quantity": 1,
-      "unitPrice": 25
     }
   ]
 }
 ```
 
-Los métodos de pago son `CASH`, `TRANSFER` y `CARD`. El total se calcula como la suma de
-`quantity * unitPrice` menos `discount`.
+Los métodos de pago son `CASH`, `TRANSFER` y `CARD`. El request de venta sólo recibe
+`itemId` y `quantity` por línea. El backend obtiene el precio vigente del catálogo y calcula
+subtotales y total con `BigDecimal`, redondeando a dos decimales con `HALF_UP`. Los campos
+`unitPrice`, `subtotalAmount`, `totalAmount` y `soldAt` son únicamente de respuesta. Clientes
+que enviaban `unitPrice` deben eliminarlo del payload; ya no forma parte del contrato.
 
 ## Reportes y auditoría
 

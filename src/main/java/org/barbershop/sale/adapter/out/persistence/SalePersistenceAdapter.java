@@ -6,6 +6,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import java.math.RoundingMode;
 import org.barbershop.sale.application.port.out.SaleRepositoryPort;
 import org.barbershop.sale.domain.Sale;
 import org.barbershop.sale.domain.SaleItem;
@@ -91,7 +92,7 @@ public class SalePersistenceAdapter implements SaleRepositoryPort {
       saleItem.itemId = item.itemId();
       saleItem.quantity = item.quantity();
       saleItem.unitPrice = item.unitPrice();
-      saleItem.subtotalAmount = item.quantity() * item.unitPrice();
+      saleItem.subtotalAmount = item.subtotalAmount().setScale(2, RoundingMode.HALF_UP);
       em.persist(saleItem);
     }
   }

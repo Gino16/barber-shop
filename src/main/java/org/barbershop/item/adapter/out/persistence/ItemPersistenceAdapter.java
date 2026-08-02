@@ -48,6 +48,7 @@ public class ItemPersistenceAdapter implements ItemRepositoryPort {
     entity.name = item.name();
     entity.description = item.description();
     entity.category = item.category();
+    entity.price = item.price();
     entity.active = item.active();
     entity.createdAt = item.createdAt().toLocalDateTime();
     if (entity.id == null) {
@@ -85,7 +86,7 @@ public class ItemPersistenceAdapter implements ItemRepositoryPort {
       if (!hql.isEmpty()) {
         hql.append(" AND ");
       }
-      hql.append("is_active = ?").append(paramIndex);
+      hql.append("active = ?").append(paramIndex);
       params = appendParam(params, query.active());
       paramIndex++;
     }

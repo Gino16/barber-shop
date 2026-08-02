@@ -16,6 +16,7 @@ import org.barbershop.sale.domain.SaleItem;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -76,7 +77,7 @@ class SalePersistenceAdapterTest {
     // Assert
     assertTrue(result.isPresent());
     assertEquals(1L, result.get().id());
-    assertEquals(250.0, result.get().totalAmount());
+    assertEquals(BigDecimal.valueOf(250).setScale(2), result.get().totalAmount());
   }
 
   @Test
@@ -119,7 +120,7 @@ class SalePersistenceAdapterTest {
     SaleJpaEntity entity = saleEntity(1L);
     PanacheQuery<SaleJpaEntity> saleQuery = mock(PanacheQuery.class);
     Query deleteQuery = mock(Query.class);
-    SaleItem item = new SaleItem(null, 1L, 7L, 2, 25.0, 50.0);
+    SaleItem item = new SaleItem(null, 1L, 7L, 2, BigDecimal.valueOf(25), BigDecimal.valueOf(50));
     when(repository.find("id", 1L)).thenReturn(saleQuery);
     when(saleQuery.firstResult()).thenReturn(entity);
     when(entityManager.createQuery(startsWith("DELETE FROM SaleItemJpaEntity"))).thenReturn(deleteQuery);
@@ -135,7 +136,7 @@ class SalePersistenceAdapterTest {
         savedItem instanceof SaleItemJpaEntity saleItem
             && saleItem.itemId.equals(7L)
             && saleItem.quantity.equals(2)
-            && saleItem.subtotalAmount.equals(50.0)));
+            && saleItem.subtotalAmount.equals(BigDecimal.valueOf(50).setScale(2))));
   }
 
   private SaleJpaEntity saleEntity(Long id) {
@@ -144,14 +145,16 @@ class SalePersistenceAdapterTest {
     entity.customerId = 10L;
     entity.employeeId = 20L;
     entity.paymentMethod = PaymentMethod.CARD;
-    entity.totalAmount = 250.0;
-    entity.discount = 0.0;
+    entity.totalAmount = BigDecimal.valueOf(250);
+    entity.discount = BigDecimal.ZERO;
     entity.notes = "Nota";
     entity.soldAt = SOLD_AT.toLocalDateTime();
     return entity;
   }
 
   private Sale sale(Long id, List<SaleItem> items) {
-    return new Sale(id, 10L, 20L, PaymentMethod.CARD, 250.0, 0.0, "Nota", items, SOLD_AT);
+    BigDecimal total = items.isEmpty() ? BigDecimal.valueOf(250) : BigDecimal.valueOf(50);
+    return new Sale(id, 10L, 20L, PaymentMethod.CARD, total,
+        BigDecimal.ZERO, "Nota", items, SOLD_AT);
   }
 }

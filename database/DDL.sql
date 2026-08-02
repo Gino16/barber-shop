@@ -10,7 +10,7 @@ CREATE TABLE items
     name        VARCHAR(100) NOT NULL,
     description TEXT,
     category    VARCHAR(50)  NOT NULL, -- 'SERVICE', 'PRODUCT'
-    price       DECIMAL(10, 2),
+    price       DECIMAL(19, 2) NOT NULL CHECK (price >= 0),
     is_active   BOOLEAN      NOT NULL DEFAULT TRUE,
     created_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at  TIMESTAMP    NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -71,9 +71,9 @@ CREATE TABLE sales
     customer_id    INTEGER        REFERENCES customers (id) ON DELETE SET NULL,
     employee_id    INTEGER        REFERENCES employees (id) ON DELETE SET NULL,
     sold_at        TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    total_amount   DECIMAL(10, 2) NOT NULL DEFAULT 0,
+    total_amount   DECIMAL(19, 2) NOT NULL DEFAULT 0 CHECK (total_amount >= 0),
     payment_method VARCHAR(20)    NOT NULL, -- 'CASH', 'TRANSFER', 'CARD'
-    discount       DECIMAL(10, 2)          DEFAULT 0,
+    discount       DECIMAL(19, 2)          NOT NULL DEFAULT 0 CHECK (discount >= 0),
     notes          TEXT,
     created_at     TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at     TIMESTAMP      NOT NULL DEFAULT CURRENT_TIMESTAMP
@@ -87,8 +87,8 @@ CREATE TABLE sale_items
     sale_id         INTEGER REFERENCES sales (id) ON DELETE CASCADE,
     item_id         INTEGER REFERENCES items (id),
     quantity        INTEGER        NOT NULL DEFAULT 1,
-    unit_price      DECIMAL(10, 2) NOT NULL,
-    subtotal_amount DECIMAL(10, 2) NOT NULL
+    unit_price      DECIMAL(19, 2) NOT NULL CHECK (unit_price >= 0),
+    subtotal_amount DECIMAL(19, 2) NOT NULL CHECK (subtotal_amount >= 0)
 );
 
 -- ==================== INVENTORY ====================
@@ -161,4 +161,3 @@ CREATE INDEX idx_sale_items_sale_id ON sale_items (sale_id);
 CREATE INDEX idx_audit_log_entity ON audit_log (entity_type, entity_id);
 CREATE INDEX idx_audit_log_timestamp ON audit_log (timestamp);
 CREATE INDEX idx_daily_reports_report_date ON daily_reports (report_date);
-

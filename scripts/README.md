@@ -11,6 +11,9 @@ Estos archivos cargan el catálogo de ejemplo (servicios y productos):
 
 ## SQL
 
+En una base existente, aplica primero `database/migrations/V2__item_price_and_money_constraints.sql`.
+El script de items asigna precios explícitos dentro de una transacción.
+
 Con PostgreSQL local:
 
 ```bash

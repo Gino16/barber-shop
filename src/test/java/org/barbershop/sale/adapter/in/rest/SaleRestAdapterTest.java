@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,21 +38,21 @@ class SaleRestAdapterTest {
   private static final OffsetDateTime NOW = OffsetDateTime.now(ZoneOffset.UTC);
 
   private Sale sampleSale() {
-    SaleItem item = new SaleItem(1L, 1L, 10L, 2, 50.0, 100.0);
-    return new Sale(1L, 1L, 2L, PaymentMethod.CASH, 90.0, 10.0, "Nota", List.of(item), NOW);
+    SaleItem item = new SaleItem(1L, 1L, 10L, 2, BigDecimal.valueOf(50), BigDecimal.valueOf(100));
+    return new Sale(1L, 1L, 2L, PaymentMethod.CASH, BigDecimal.valueOf(90),
+        BigDecimal.TEN, "Nota", List.of(item), NOW);
   }
 
   private SaleRequest sampleRequest() {
     SaleItemRequest itemReq = new SaleItemRequest();
     itemReq.setItemId(10L);
     itemReq.setQuantity(2);
-    itemReq.setUnitPrice(50.0);
 
     SaleRequest req = new SaleRequest();
     req.setCustomerId(1L);
     req.setEmployeeId(2L);
     req.setPaymentMethod(SaleRequest.PaymentMethodEnum.CASH);
-    req.setDiscount(10.0);
+    req.setDiscount(BigDecimal.TEN);
     req.setNotes("Nota");
     req.setItems(List.of(itemReq));
     return req;

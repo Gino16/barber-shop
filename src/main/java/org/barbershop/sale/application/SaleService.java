@@ -4,6 +4,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,6 +15,10 @@ import org.barbershop.audit.domain.AuditAction;
 import org.barbershop.common.pagination.PagedResponse;
 import org.barbershop.sale.application.port.in.SaleUseCase;
 import org.barbershop.sale.application.port.out.SaleRepositoryPort;
+import org.barbershop.customer.application.port.out.CustomerRepositoryPort;
+import org.barbershop.employee.application.port.out.EmployeeRepositoryPort;
+import org.barbershop.item.application.port.out.ItemRepositoryPort;
+import org.barbershop.item.domain.Item;
 import org.barbershop.sale.domain.Sale;
 import org.barbershop.sale.domain.SaleItem;
 
@@ -21,11 +27,19 @@ public class SaleService implements SaleUseCase {
 
   private final SaleRepositoryPort repository;
   private final AuditLogger auditLogger;
+  private final CustomerRepositoryPort customerRepository;
+  private final EmployeeRepositoryPort employeeRepository;
+  private final ItemRepositoryPort itemRepository;
 
   @Inject
-  public SaleService(SaleRepositoryPort repository, AuditLogger auditLogger) {
+  public SaleService(SaleRepositoryPort repository, AuditLogger auditLogger,
+      CustomerRepositoryPort customerRepository, EmployeeRepositoryPort employeeRepository,
+      ItemRepositoryPort itemRepository) {
     this.repository = repository;
     this.auditLogger = auditLogger;
+    this.customerRepository = customerRepository;
+    this.employeeRepository = employeeRepository;
+    this.itemRepository = itemRepository;
   }
 
   @Override
@@ -46,14 +60,24 @@ public class SaleService implements SaleUseCase {
 
   @Override
   public Sale create(SaleCommand command) {
-    Double discount = command.discount() != null ? command.discount() : 0.0;
+    validateReferences(command);
+    if (command.items() == null || command.items().isEmpty()) {
+      throw new IllegalArgumentException("La venta debe contener al menos un ítem");
+    }
 
+    BigDecimal discount = normalize(command.discount() != null ? command.discount() : BigDecimal.ZERO);
     List<SaleItem> items = command.items().stream()
-        .map(item -> new SaleItem(null, null, item.itemId(), item.quantity(), item.unitPrice(),
-            item.quantity() * item.unitPrice()))
+        .map(this::calculateItem)
         .toList();
 
-    Double totalAmount = calculateTotal(items, discount);
+    BigDecimal subtotal = items.stream()
+        .map(SaleItem::subtotalAmount)
+        .reduce(BigDecimal.ZERO, BigDecimal::add)
+        .setScale(2, RoundingMode.HALF_UP);
+    if (discount.signum() < 0 || discount.compareTo(subtotal) > 0) {
+      throw new IllegalArgumentException("El descuento es inválido");
+    }
+    BigDecimal totalAmount = subtotal.subtract(discount).setScale(2, RoundingMode.HALF_UP);
 
     Sale created = repository.save(new Sale(null, command.customerId(), command.employeeId(),
         command.paymentMethod(), totalAmount, discount, command.notes(), items,
@@ -62,11 +86,38 @@ public class SaleService implements SaleUseCase {
     return created;
   }
 
-  private Double calculateTotal(List<SaleItem> items, Double discount) {
-    Double subtotal = items.stream()
-        .mapToDouble(item -> item.quantity() * item.unitPrice())
-        .sum();
-    return subtotal - discount;
+  private void validateReferences(SaleCommand command) {
+    if (command.customerId() == null || customerRepository.findById(command.customerId()).isEmpty()) {
+      throw new IllegalArgumentException("El cliente no existe");
+    }
+    if (command.employeeId() == null || employeeRepository.findById(command.employeeId()).isEmpty()) {
+      throw new IllegalArgumentException("El empleado no existe");
+    }
+  }
+
+  private SaleItem calculateItem(SaleItemCommand command) {
+    if (command == null || command.itemId() == null) {
+      throw new IllegalArgumentException("El ítem es obligatorio");
+    }
+    if (command.quantity() == null || command.quantity() <= 0) {
+      throw new IllegalArgumentException("La cantidad debe ser mayor que cero");
+    }
+    Item item = itemRepository.findById(command.itemId())
+        .orElseThrow(() -> new IllegalArgumentException("El ítem no existe"));
+    if (!item.active()) {
+      throw new IllegalArgumentException("El ítem está inactivo");
+    }
+    BigDecimal unitPrice = normalize(item.price());
+    BigDecimal subtotal = unitPrice.multiply(BigDecimal.valueOf(command.quantity()))
+        .setScale(2, RoundingMode.HALF_UP);
+    return new SaleItem(null, null, item.id(), command.quantity(), unitPrice, subtotal);
+  }
+
+  private BigDecimal normalize(BigDecimal amount) {
+    if (amount == null) {
+      throw new IllegalArgumentException("El importe es obligatorio");
+    }
+    return amount.setScale(2, RoundingMode.HALF_UP);
   }
 
   private Map<String, Object> values(Sale sale) {

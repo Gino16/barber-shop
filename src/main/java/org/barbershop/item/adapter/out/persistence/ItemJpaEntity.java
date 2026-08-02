@@ -10,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.math.BigDecimal;
 import org.barbershop.item.domain.Item;
 
 @Entity
@@ -24,13 +25,16 @@ public class ItemJpaEntity {
   public String description;
   @Enumerated(EnumType.STRING)
   public Item.Category category;
+  @Column(nullable = false, precision = 19, scale = 2)
+  public BigDecimal price;
   @Column(name = "is_active", nullable = false)
   public boolean active = true;
   @Column(name = "created_at", nullable = false)
   public LocalDateTime createdAt;
 
   public Item toDomain() {
-    return new Item(id, name, description, category, active, createdAt.atOffset(ZoneOffset.UTC));
+    return new Item(id, name, description, category, price, active,
+        createdAt.atOffset(ZoneOffset.UTC));
   }
 
   public static ItemJpaEntity fromDomain(Item item) {
@@ -39,6 +43,7 @@ public class ItemJpaEntity {
     entity.name = item.name();
     entity.description = item.description();
     entity.category = item.category();
+    entity.price = item.price();
     entity.active = item.active();
     entity.createdAt = item.createdAt().toLocalDateTime();
     return entity;

@@ -42,7 +42,8 @@ public class ItemService implements ItemUseCase {
   public Item create(ItemCommand command) {
     Item created = repository.save(
         new Item(null, command.name(), command.description(), command.category(),
-            command.active() == null || command.active(), OffsetDateTime.now(ZoneOffset.UTC)));
+            command.price(), command.active() == null || command.active(),
+            OffsetDateTime.now(ZoneOffset.UTC)));
     auditLogger.record("ITEM", created.id(), AuditAction.CREATE, null, values(created));
     return created;
   }
@@ -53,6 +54,7 @@ public class ItemService implements ItemUseCase {
         .map(existing -> {
           Item updated = repository.save(new Item(existing.id(), command.name(),
               command.description(), command.category(),
+              command.price(),
               command.active() == null || command.active(),
               existing.createdAt()));
           auditLogger.record("ITEM", updated.id(), AuditAction.UPDATE, values(existing),
@@ -67,6 +69,7 @@ public class ItemService implements ItemUseCase {
     values.put("name", item.name());
     values.put("description", item.description());
     values.put("category", item.category());
+    values.put("price", item.price());
     values.put("active", item.active());
     values.put("createdAt", item.createdAt());
     return values;

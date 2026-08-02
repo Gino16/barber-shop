@@ -66,8 +66,7 @@ public class SaleRestAdapter implements SalesApi {
     return new SaleCommand(request.getCustomerId(), request.getEmployeeId(),
         PaymentMethod.valueOf(request.getPaymentMethod().value()), request.getDiscount(),
         request.getNotes(), request.getItems().stream()
-        .map(item -> new SaleItemCommand(item.getItemId(), item.getQuantity(),
-            item.getUnitPrice()))
+        .map(item -> new SaleItemCommand(item.getItemId(), item.getQuantity()))
         .toList());
   }
 

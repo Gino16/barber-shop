@@ -27,6 +27,17 @@ password: barber_shop
 port:     5432
 ```
 
+Para una base existente, asigna precios reales a los ítems y ejecuta la migración dentro
+de una transacción antes de usar ventas:
+
+```powershell
+Get-Content database\migrations\V2__item_price_and_money_constraints.sql |
+  docker exec -i barber-shop-postgres psql -U barber_shop -d barber_shop
+```
+
+La migración falla deliberadamente si encuentra `items.price` nulo; no inventa precios ni
+modifica las líneas históricas de `sale_items`.
+
 Para cambiar estos valores, edita `devops\.env`. La aplicación también acepta
 `POSTGRES_HOST`, `POSTGRES_PORT`, `POSTGRES_DB`, `POSTGRES_USER` y
 `POSTGRES_PASSWORD`.
@@ -60,7 +71,7 @@ Crear un item:
 ```powershell
 curl -Method Post "http://localhost:8080/api/items" `
   -ContentType "application/json" `
-  -Body '{"name":"Corte clásico","description":"Servicio de barbería","category":"SERVICE","active":true}'
+  -Body '{"name":"Corte clásico","description":"Servicio de barbería","category":"SERVICE","price":50000,"active":true}'
 ```
 
 Crear una venta:
@@ -68,8 +79,11 @@ Crear una venta:
 ```powershell
 curl -Method Post "http://localhost:8080/api/sales" `
   -ContentType "application/json" `
-  -Body '{"customerId":1,"employeeId":1,"paymentMethod":"CASH","discount":0,"items":[{"itemId":1,"quantity":1,"unitPrice":25.0}]}'
+  -Body '{"customerId":1,"employeeId":1,"paymentMethod":"CASH","discount":0,"items":[{"itemId":1,"quantity":1}]}'
 ```
+
+El precio de la venta se obtiene del catálogo en el backend. `unitPrice`, subtotales y
+totales son campos de respuesta; los clientes existentes deben dejar de enviarlos.
 
 La referencia completa de rutas, filtros y payloads está en `ENDPOINTS.md`; el contrato
 definitivo está en `src/main/resources/openapi.yaml`.

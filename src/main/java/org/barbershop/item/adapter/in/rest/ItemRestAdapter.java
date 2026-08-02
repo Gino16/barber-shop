@@ -3,6 +3,7 @@ package org.barbershop.item.adapter.in.rest;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.core.Response;
+import java.math.BigDecimal;
 import org.barbershop.api.ItemsApi;
 import org.barbershop.api.model.ItemRequest;
 import org.barbershop.api.model.ItemResponse;
@@ -69,13 +70,15 @@ public class ItemRestAdapter implements ItemsApi {
 
   private ItemCommand toCommand(ItemRequest r) {
     return new ItemCommand(r.getName(), r.getDescription(),
-        Item.Category.valueOf(r.getCategory().value()), r.getActive());
+        Item.Category.valueOf(r.getCategory().value()),
+        r.getPrice() != null ? r.getPrice() : null, r.getActive());
   }
 
   private ItemResponse toModel(Item i) {
     return ItemResponse.builder()
         .id(i.id()).name(i.name()).description(i.description())
-        .category(ItemResponse.CategoryEnum.fromValue(i.category().name())).active(i.active())
+        .category(ItemResponse.CategoryEnum.fromValue(i.category().name()))
+        .price(i.price()).active(i.active())
         .createdAt(i.createdAt())
         .build();
   }

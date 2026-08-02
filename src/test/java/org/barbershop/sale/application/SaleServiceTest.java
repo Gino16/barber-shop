@@ -17,6 +17,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.math.BigDecimal;
+import org.barbershop.customer.application.port.out.CustomerRepositoryPort;
+import org.barbershop.employee.application.port.out.EmployeeRepositoryPort;
+import org.barbershop.item.application.port.out.ItemRepositoryPort;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,19 +38,41 @@ class SaleServiceTest {
   @Mock
   private AuditLogger auditLogger;
 
+  @Mock
+  private CustomerRepositoryPort customerRepository;
+
+  @Mock
+  private EmployeeRepositoryPort employeeRepository;
+
+  @Mock
+  private ItemRepositoryPort itemRepository;
+
   @InjectMocks
   private SaleService saleService;
 
   private static final OffsetDateTime NOW = OffsetDateTime.now(ZoneOffset.UTC);
 
   private Sale sampleSale(Long id) {
-    SaleItem item = new SaleItem(1L, id, 10L, 2, 50.0, 100.0);
-    return new Sale(id, 1L, 2L, PaymentMethod.CASH, 90.0, 10.0, "Nota", List.of(item), NOW);
+    SaleItem item = new SaleItem(1L, id, 10L, 2, BigDecimal.valueOf(50), BigDecimal.valueOf(100));
+    return new Sale(id, 1L, 2L, PaymentMethod.CASH, BigDecimal.valueOf(90),
+        BigDecimal.TEN, "Nota", List.of(item), NOW);
   }
 
   private SaleCommand sampleCommand() {
-    SaleItemCommand itemCmd = new SaleItemCommand(10L, 2, 50.0);
-    return new SaleCommand(1L, 2L, PaymentMethod.CASH, 10.0, "Nota", List.of(itemCmd));
+    SaleItemCommand itemCmd = new SaleItemCommand(10L, 2);
+    return new SaleCommand(1L, 2L, PaymentMethod.CASH, BigDecimal.TEN, "Nota", List.of(itemCmd));
+  }
+
+  private void stubValidReferences() {
+    when(customerRepository.findById(1L))
+        .thenReturn(Optional.of(mock(org.barbershop.customer.domain.Customer.class)));
+    when(employeeRepository.findById(2L))
+        .thenReturn(Optional.of(mock(org.barbershop.employee.domain.Employee.class)));
+  }
+
+  private org.barbershop.item.domain.Item item(long id, String name, String price) {
+    return new org.barbershop.item.domain.Item(id, name, null,
+        org.barbershop.item.domain.Item.Category.SERVICE, new BigDecimal(price), true, NOW);
   }
 
   @Test
@@ -118,6 +144,11 @@ class SaleServiceTest {
     // Arrange
     Sale saved = sampleSale(1L);
     when(repository.save(any(Sale.class))).thenReturn(saved);
+    when(customerRepository.findById(1L)).thenReturn(Optional.of(mock(org.barbershop.customer.domain.Customer.class)));
+    when(employeeRepository.findById(2L)).thenReturn(Optional.of(mock(org.barbershop.employee.domain.Employee.class)));
+    when(itemRepository.findById(10L)).thenReturn(Optional.of(
+        new org.barbershop.item.domain.Item(10L, "Corte", null,
+            org.barbershop.item.domain.Item.Category.SERVICE, BigDecimal.valueOf(50), true, NOW)));
 
     // Act
     Sale result = saleService.create(sampleCommand());
@@ -135,6 +166,11 @@ class SaleServiceTest {
   void shouldCalculateTotalCorrectlyWhenCreateCalledWithDiscount() {
     // Arrange
     ArgumentCaptor<Sale> captor = ArgumentCaptor.forClass(Sale.class);
+    when(customerRepository.findById(1L)).thenReturn(Optional.of(mock(org.barbershop.customer.domain.Customer.class)));
+    when(employeeRepository.findById(2L)).thenReturn(Optional.of(mock(org.barbershop.employee.domain.Employee.class)));
+    when(itemRepository.findById(10L)).thenReturn(Optional.of(
+        new org.barbershop.item.domain.Item(10L, "Corte", null,
+            org.barbershop.item.domain.Item.Category.SERVICE, BigDecimal.valueOf(50), true, NOW)));
     when(repository.save(captor.capture())).thenAnswer(inv -> inv.getArgument(0));
 
     // Act
@@ -142,7 +178,7 @@ class SaleServiceTest {
 
     // Assert
     Sale savedSale = captor.getValue();
-    assertEquals(90.0, savedSale.totalAmount());
+    assertEquals(BigDecimal.valueOf(90).setScale(2), savedSale.totalAmount());
   }
 
   @Test
@@ -150,7 +186,12 @@ class SaleServiceTest {
   void shouldUseZeroDiscountWhenCreateCalledWithNullDiscount() {
     // Arrange
     SaleCommand command = new SaleCommand(1L, 2L, PaymentMethod.CARD, null, "Nota",
-        List.of(new SaleItemCommand(10L, 1, 100.0)));
+        List.of(new SaleItemCommand(10L, 1)));
+    when(customerRepository.findById(1L)).thenReturn(Optional.of(mock(org.barbershop.customer.domain.Customer.class)));
+    when(employeeRepository.findById(2L)).thenReturn(Optional.of(mock(org.barbershop.employee.domain.Employee.class)));
+    when(itemRepository.findById(10L)).thenReturn(Optional.of(
+        new org.barbershop.item.domain.Item(10L, "Corte", null,
+            org.barbershop.item.domain.Item.Category.SERVICE, BigDecimal.valueOf(100), true, NOW)));
     ArgumentCaptor<Sale> captor = ArgumentCaptor.forClass(Sale.class);
     when(repository.save(captor.capture())).thenAnswer(inv -> inv.getArgument(0));
 
@@ -158,7 +199,7 @@ class SaleServiceTest {
     saleService.create(command);
 
     // Assert
-    assertEquals(100.0, captor.getValue().totalAmount());
+    assertEquals(BigDecimal.valueOf(100).setScale(2), captor.getValue().totalAmount());
   }
 
   @Test
@@ -174,5 +215,102 @@ class SaleServiceTest {
     // Assert
     assertEquals(4, result.totalPages());
     assertTrue(result.hasNextPage());
+  }
+
+  @Test
+  void shouldUseCatalogPriceAndIgnoreAnyClientPrice() {
+    stubValidReferences();
+    when(itemRepository.findById(10L)).thenReturn(Optional.of(item(10L, "Corte", "125.00")));
+    ArgumentCaptor<Sale> captor = ArgumentCaptor.forClass(Sale.class);
+    when(repository.save(captor.capture())).thenAnswer(invocation -> invocation.getArgument(0));
+
+    saleService.create(new SaleCommand(1L, 2L, PaymentMethod.CASH, BigDecimal.ZERO, null,
+        List.of(new SaleItemCommand(10L, 2))));
+
+    Sale saved = captor.getValue();
+    assertEquals(new BigDecimal("125.00"), saved.items().getFirst().unitPrice());
+    assertEquals(new BigDecimal("250.00"), saved.items().getFirst().subtotalAmount());
+    assertEquals(new BigDecimal("250.00"), saved.totalAmount());
+  }
+
+  @Test
+  void shouldRejectUnknownItemAndLeaveRepositoryUntouched() {
+    stubValidReferences();
+    when(itemRepository.findById(99L)).thenReturn(Optional.empty());
+
+    assertThrows(IllegalArgumentException.class, () -> saleService.create(
+        new SaleCommand(1L, 2L, PaymentMethod.CASH, BigDecimal.ZERO, null,
+            List.of(new SaleItemCommand(99L, 1)))));
+    verify(repository, never()).save(any());
+  }
+
+  @Test
+  void shouldRejectInactiveItem() {
+    stubValidReferences();
+    when(itemRepository.findById(10L)).thenReturn(Optional.of(
+        new org.barbershop.item.domain.Item(10L, "Corte", null,
+            org.barbershop.item.domain.Item.Category.SERVICE, new BigDecimal("50.00"), false, NOW)));
+
+    assertThrows(IllegalArgumentException.class, () -> saleService.create(sampleCommand()));
+    verify(repository, never()).save(any());
+  }
+
+  @Test
+  void shouldRejectInvalidQuantity() {
+    stubValidReferences();
+
+    assertThrows(IllegalArgumentException.class, () -> saleService.create(
+        new SaleCommand(1L, 2L, PaymentMethod.CASH, BigDecimal.ZERO, null,
+            List.of(new SaleItemCommand(10L, 0)))));
+    verifyNoInteractions(itemRepository);
+    verify(repository, never()).save(any());
+  }
+
+  @Test
+  void shouldRejectNegativeAndExcessiveDiscount() {
+    stubValidReferences();
+    when(itemRepository.findById(10L)).thenReturn(Optional.of(item(10L, "Corte", "50.00")));
+
+    assertThrows(IllegalArgumentException.class, () -> saleService.create(
+        new SaleCommand(1L, 2L, PaymentMethod.CASH, new BigDecimal("-1"), null,
+            List.of(new SaleItemCommand(10L, 1)))));
+    assertThrows(IllegalArgumentException.class, () -> saleService.create(
+        new SaleCommand(1L, 2L, PaymentMethod.CASH, new BigDecimal("50.01"), null,
+            List.of(new SaleItemCommand(10L, 1)))));
+    verify(repository, never()).save(any());
+  }
+
+  @Test
+  void shouldCalculateMultipleLinesWithMoneyRounding() {
+    stubValidReferences();
+    when(itemRepository.findById(10L)).thenReturn(Optional.of(item(10L, "Corte", "10.005")));
+    when(itemRepository.findById(11L)).thenReturn(Optional.of(item(11L, "Cera", "2.335")));
+    ArgumentCaptor<Sale> captor = ArgumentCaptor.forClass(Sale.class);
+    when(repository.save(captor.capture())).thenAnswer(invocation -> invocation.getArgument(0));
+
+    saleService.create(new SaleCommand(1L, 2L, PaymentMethod.CARD, new BigDecimal("1.00"), null,
+        List.of(new SaleItemCommand(10L, 2), new SaleItemCommand(11L, 3))));
+
+    Sale saved = captor.getValue();
+    assertEquals(new BigDecimal("20.02"), saved.items().get(0).subtotalAmount());
+    assertEquals(new BigDecimal("7.02"), saved.items().get(1).subtotalAmount());
+    assertEquals(new BigDecimal("26.04"), saved.totalAmount());
+  }
+
+  @Test
+  void shouldPreserveHistoricalUnitPriceWhenCatalogPriceChanges() {
+    stubValidReferences();
+    when(itemRepository.findById(10L))
+        .thenReturn(Optional.of(item(10L, "Corte", "50.00")))
+        .thenReturn(Optional.of(item(10L, "Corte", "75.00")));
+    when(repository.save(any(Sale.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+    Sale first = saleService.create(new SaleCommand(1L, 2L, PaymentMethod.CASH, null, null,
+        List.of(new SaleItemCommand(10L, 1))));
+    Sale second = saleService.create(new SaleCommand(1L, 2L, PaymentMethod.CASH, null, null,
+        List.of(new SaleItemCommand(10L, 1))));
+
+    assertEquals(new BigDecimal("50.00"), first.items().getFirst().unitPrice());
+    assertEquals(new BigDecimal("75.00"), second.items().getFirst().unitPrice());
   }
 }

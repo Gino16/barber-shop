@@ -3,6 +3,9 @@
 -- Servicios y Productos
 -- ============================================
 
+BEGIN;
+ALTER TABLE items ALTER COLUMN price SET DEFAULT 0;
+
 -- ==================== SERVICIOS PARA HOMBRES ====================
 -- Corte Colegial
 INSERT INTO items (name, description, category, is_active, created_at)
@@ -108,3 +111,44 @@ INSERT INTO items (name, description, category, is_active, created_at)
 VALUES ('Colonia Barber', 'Colonia clásica con aroma barbero, 100ml', 'PRODUCT', true, CURRENT_TIMESTAMP);
 
 -- Total: 24 items (14 servicios + 10 productos)
+UPDATE items
+SET price = CASE name
+  WHEN 'Corte Colegial' THEN 25000
+  WHEN 'Corte Fade' THEN 35000
+  WHEN 'Corte Undercut' THEN 40000
+  WHEN 'Corte Degradado' THEN 35000
+  WHEN 'Corte de Barba' THEN 20000
+  WHEN 'Afeitado Completo' THEN 25000
+  WHEN 'Corte + Barba (Combo)' THEN 50000
+  WHEN 'Tinte/Coloración' THEN 80000
+  WHEN 'Tratamiento Capilar' THEN 60000
+  WHEN 'Corte Damas' THEN 45000
+  WHEN 'Alisado' THEN 120000
+  WHEN 'Peinado/Estilizado' THEN 50000
+  WHEN 'Diseño de Cejas' THEN 15000
+  WHEN 'Hidratación Facial' THEN 35000
+  WHEN 'Shampoo Premium Hombre' THEN 30000
+  WHEN 'Acondicionador' THEN 28000
+  WHEN 'Pomada Fuerte' THEN 35000
+  WHEN 'Gel Styling' THEN 22000
+  WHEN 'Spray Fijador' THEN 25000
+  WHEN 'Aceite para Barba' THEN 30000
+  WHEN 'Loción Aftershave' THEN 28000
+  WHEN 'Tónico Capilar' THEN 32000
+  WHEN 'Mascarilla Capilar' THEN 40000
+  WHEN 'Crema para Peinar' THEN 26000
+  WHEN 'Colonia Barber' THEN 45000
+  ELSE price
+END
+WHERE name IN (
+  'Corte Colegial', 'Corte Fade', 'Corte Undercut', 'Corte Degradado',
+  'Corte de Barba', 'Afeitado Completo', 'Corte + Barba (Combo)',
+  'Tinte/Coloración', 'Tratamiento Capilar', 'Corte Damas', 'Alisado',
+  'Peinado/Estilizado', 'Diseño de Cejas', 'Hidratación Facial',
+  'Shampoo Premium Hombre', 'Acondicionador', 'Pomada Fuerte', 'Gel Styling',
+  'Spray Fijador', 'Aceite para Barba', 'Loción Aftershave', 'Tónico Capilar',
+  'Mascarilla Capilar', 'Crema para Peinar', 'Colonia Barber'
+);
+
+ALTER TABLE items ALTER COLUMN price DROP DEFAULT;
+COMMIT;

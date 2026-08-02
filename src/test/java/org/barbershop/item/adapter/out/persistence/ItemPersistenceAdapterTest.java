@@ -11,6 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -34,6 +35,7 @@ class ItemPersistenceAdapterTest {
     entity.id = 1L;
     entity.name = "Corte";
     entity.category = Item.Category.SERVICE;
+    entity.price = BigDecimal.TEN;
     entity.active = true;
     entity.createdAt = LocalDateTime.now();
 
@@ -73,6 +75,7 @@ class ItemPersistenceAdapterTest {
     entity.name = "Corte";
     entity.description = "Corte moderno";
     entity.category = Item.Category.SERVICE;
+    entity.price = BigDecimal.TEN;
     entity.active = true;
     entity.createdAt = LocalDateTime.now();
 
@@ -93,7 +96,7 @@ class ItemPersistenceAdapterTest {
   void shouldConvertDomainToJpaEntity() {
     // Arrange
     OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
-    Item domain = new Item(1L, "Corte", "Corte moderno", Item.Category.SERVICE, true, now);
+    Item domain = new Item(1L, "Corte", "Corte moderno", Item.Category.SERVICE, BigDecimal.TEN, true, now);
 
     // Act
     ItemJpaEntity entity = ItemJpaEntity.fromDomain(domain);

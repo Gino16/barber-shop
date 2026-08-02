@@ -11,6 +11,7 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
+import java.math.BigDecimal;
 import org.barbershop.sale.domain.PaymentMethod;
 import org.barbershop.sale.domain.Sale;
 import org.barbershop.sale.domain.SaleItem;
@@ -34,10 +35,10 @@ public class SaleJpaEntity {
   public PaymentMethod paymentMethod;
 
   @Column(name = "total_amount", nullable = false)
-  public Double totalAmount;
+  public BigDecimal totalAmount;
 
   @Column(nullable = false)
-  public Double discount = 0.0;
+  public BigDecimal discount = BigDecimal.ZERO;
 
   @Column(columnDefinition = "TEXT")
   public String notes;

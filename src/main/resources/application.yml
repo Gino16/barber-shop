@@ -2,6 +2,12 @@ greeting:
   message: "hello"
 
 quarkus:
+  http:
+    cors:
+      enabled: true
+      origins: http://localhost:4200
+      methods: GET,POST,PUT,DELETE,OPTIONS
+      headers: Accept,Authorization,Content-Type,X-Requested-With
   smallrye-openapi:
     path: /openapi
     info-title: Barber Shop API

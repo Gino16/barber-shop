@@ -13,6 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,8 +37,8 @@ class ItemServiceTest {
   @DisplayName("ReturnPaginatedItems_WhenListCalled")
   void shouldReturnPaginatedItemsWhenListCalled() {
     // Arrange
-    Item item1 = new Item(1L, "Corte", "Corte de cabello", Item.Category.SERVICE, true, OffsetDateTime.now(ZoneOffset.UTC));
-    Item item2 = new Item(2L, "Afeitado", "Afeitado completo", Item.Category.SERVICE, true, OffsetDateTime.now(ZoneOffset.UTC));
+    Item item1 = new Item(1L, "Corte", "Corte de cabello", Item.Category.SERVICE, BigDecimal.TEN, true, OffsetDateTime.now(ZoneOffset.UTC));
+    Item item2 = new Item(2L, "Afeitado", "Afeitado completo", Item.Category.SERVICE, BigDecimal.TEN, true, OffsetDateTime.now(ZoneOffset.UTC));
     
     ItemFilterQuery query = new ItemFilterQuery(null, null, null, 1, 10, "id", "asc");
     
@@ -64,7 +65,7 @@ class ItemServiceTest {
   void shouldReturnItemWhenFindByIdCalled() {
     // Arrange
     Long itemId = 1L;
-    Item expectedItem = new Item(itemId, "Corte", "Corte de cabello", Item.Category.SERVICE, true, OffsetDateTime.now(ZoneOffset.UTC));
+    Item expectedItem = new Item(itemId, "Corte", "Corte de cabello", Item.Category.SERVICE, BigDecimal.TEN, true, OffsetDateTime.now(ZoneOffset.UTC));
     when(repositoryPort.findById(itemId)).thenReturn(Optional.of(expectedItem));
 
     // Act
@@ -95,8 +96,8 @@ class ItemServiceTest {
   @DisplayName("ReturnCreatedItem_WhenCreateCalled")
   void shouldReturnCreatedItemWhenCreateCalled() {
     // Arrange
-    ItemCommand command = new ItemCommand("Corte", "Corte moderno", Item.Category.SERVICE, true);
-    Item savedItem = new Item(1L, "Corte", "Corte moderno", Item.Category.SERVICE, true, OffsetDateTime.now(ZoneOffset.UTC));
+    ItemCommand command = new ItemCommand("Corte", "Corte moderno", Item.Category.SERVICE, BigDecimal.TEN, true);
+    Item savedItem = new Item(1L, "Corte", "Corte moderno", Item.Category.SERVICE, BigDecimal.TEN, true, OffsetDateTime.now(ZoneOffset.UTC));
     when(repositoryPort.save(any(Item.class))).thenReturn(savedItem);
 
     // Act
@@ -116,9 +117,9 @@ class ItemServiceTest {
   void shouldReturnUpdatedItemWhenUpdateCalledWithExistentId() {
     // Arrange
     Long itemId = 1L;
-    ItemCommand command = new ItemCommand("Corte Premium", "Corte con diseño", Item.Category.SERVICE, true);
-    Item existingItem = new Item(itemId, "Corte", "Corte de cabello", Item.Category.SERVICE, true, OffsetDateTime.now(ZoneOffset.UTC));
-    Item updatedItem = new Item(itemId, "Corte Premium", "Corte con diseño", Item.Category.SERVICE, true, existingItem.createdAt());
+    ItemCommand command = new ItemCommand("Corte Premium", "Corte con diseño", Item.Category.SERVICE, BigDecimal.TEN, true);
+    Item existingItem = new Item(itemId, "Corte", "Corte de cabello", Item.Category.SERVICE, BigDecimal.TEN, true, OffsetDateTime.now(ZoneOffset.UTC));
+    Item updatedItem = new Item(itemId, "Corte Premium", "Corte con diseño", Item.Category.SERVICE, BigDecimal.TEN, true, existingItem.createdAt());
 
     when(repositoryPort.findById(itemId)).thenReturn(Optional.of(existingItem));
     when(repositoryPort.save(any(Item.class))).thenReturn(updatedItem);
@@ -138,7 +139,7 @@ class ItemServiceTest {
   void shouldReturnEmptyOptionalWhenUpdateCalledWithNonExistentId() {
     // Arrange
     Long itemId = 999L;
-    ItemCommand command = new ItemCommand("Corte", "Corte de cabello", Item.Category.SERVICE, true);
+    ItemCommand command = new ItemCommand("Corte", "Corte de cabello", Item.Category.SERVICE, BigDecimal.TEN, true);
     when(repositoryPort.findById(itemId)).thenReturn(Optional.empty());
 
     // Act
@@ -154,8 +155,8 @@ class ItemServiceTest {
   @DisplayName("ReturnActiveItem_WhenCreateCalledWithoutActiveParam")
   void shouldReturnActiveItemWhenCreateCalledWithoutActiveParam() {
     // Arrange
-    ItemCommand command = new ItemCommand("Corte", "Corte moderno", Item.Category.SERVICE, null);
-    Item savedItem = new Item(1L, "Corte", "Corte moderno", Item.Category.SERVICE, true, OffsetDateTime.now(ZoneOffset.UTC));
+    ItemCommand command = new ItemCommand("Corte", "Corte moderno", Item.Category.SERVICE, BigDecimal.TEN, null);
+    Item savedItem = new Item(1L, "Corte", "Corte moderno", Item.Category.SERVICE, BigDecimal.TEN, true, OffsetDateTime.now(ZoneOffset.UTC));
     when(repositoryPort.save(any(Item.class))).thenReturn(savedItem);
 
     // Act
