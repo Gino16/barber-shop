@@ -1,10 +1,13 @@
 package org.barbershop.sale.adapter.in.rest;
 
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
+import jakarta.ws.rs.core.Response;
 import org.barbershop.api.SalesApi;
 import org.barbershop.api.model.PaginatedSalesResponse;
 import org.barbershop.api.model.PaginationResponse;
-import org.barbershop.api.model.SaleRequest;
 import org.barbershop.api.model.SaleItemResponse;
+import org.barbershop.api.model.SaleRequest;
 import org.barbershop.api.model.SaleResponse;
 import org.barbershop.common.pagination.PagedResponse;
 import org.barbershop.sale.application.SaleCommand;
@@ -12,9 +15,6 @@ import org.barbershop.sale.application.SaleItemCommand;
 import org.barbershop.sale.application.port.in.SaleUseCase;
 import org.barbershop.sale.domain.PaymentMethod;
 import org.barbershop.sale.domain.Sale;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
-import jakarta.ws.rs.core.Response;
 
 @ApplicationScoped
 public class SaleRestAdapter implements SalesApi {
@@ -66,9 +66,9 @@ public class SaleRestAdapter implements SalesApi {
     return new SaleCommand(request.getCustomerId(), request.getEmployeeId(),
         PaymentMethod.valueOf(request.getPaymentMethod().value()), request.getDiscount(),
         request.getNotes(), request.getItems().stream()
-            .map(item -> new SaleItemCommand(item.getItemId(), item.getQuantity(),
-                item.getUnitPrice()))
-            .toList());
+        .map(item -> new SaleItemCommand(item.getItemId(), item.getQuantity(),
+            item.getUnitPrice()))
+        .toList());
   }
 
   private SaleResponse toResponse(Sale sale) {

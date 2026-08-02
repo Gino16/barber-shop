@@ -13,4 +13,5 @@ public record AuditLog(
     String userName,
     OffsetDateTime timestamp
 ) {
+
 }

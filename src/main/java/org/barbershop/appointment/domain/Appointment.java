@@ -11,4 +11,5 @@ public record Appointment(
     AppointmentStatus status,
     OffsetDateTime createdAt
 ) {
+
 }

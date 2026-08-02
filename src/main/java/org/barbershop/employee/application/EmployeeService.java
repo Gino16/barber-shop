@@ -1,11 +1,5 @@
 package org.barbershop.employee.application;
 
-import org.barbershop.audit.application.AuditLogger;
-import org.barbershop.audit.domain.AuditAction;
-import org.barbershop.common.pagination.PagedResponse;
-import org.barbershop.employee.application.port.in.EmployeeUseCase;
-import org.barbershop.employee.application.port.out.EmployeeRepositoryPort;
-import org.barbershop.employee.domain.Employee;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import java.time.OffsetDateTime;
@@ -13,6 +7,12 @@ import java.time.ZoneOffset;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
+import org.barbershop.audit.application.AuditLogger;
+import org.barbershop.audit.domain.AuditAction;
+import org.barbershop.common.pagination.PagedResponse;
+import org.barbershop.employee.application.port.in.EmployeeUseCase;
+import org.barbershop.employee.application.port.out.EmployeeRepositoryPort;
+import org.barbershop.employee.domain.Employee;
 
 @ApplicationScoped
 public class EmployeeService implements EmployeeUseCase {
@@ -41,8 +41,10 @@ public class EmployeeService implements EmployeeUseCase {
 
   @Override
   public Employee create(EmployeeCommand command) {
-    Employee created = repository.save(new Employee(null, command.name(), command.role(), command.phone(),
-        command.email(), command.active() == null || command.active(), OffsetDateTime.now(ZoneOffset.UTC)));
+    Employee created = repository.save(
+        new Employee(null, command.name(), command.role(), command.phone(),
+            command.email(), command.active() == null || command.active(),
+            OffsetDateTime.now(ZoneOffset.UTC)));
     auditLogger.record("EMPLOYEE", created.id(), AuditAction.CREATE, null, values(created));
     return created;
   }
@@ -54,7 +56,8 @@ public class EmployeeService implements EmployeeUseCase {
           Employee updated = repository.save(new Employee(existing.id(), command.name(),
               command.role(), command.phone(), command.email(),
               command.active() == null || command.active(), existing.createdAt()));
-          auditLogger.record("EMPLOYEE", updated.id(), AuditAction.UPDATE, values(existing), values(updated));
+          auditLogger.record("EMPLOYEE", updated.id(), AuditAction.UPDATE, values(existing),
+              values(updated));
           return updated;
         });
   }

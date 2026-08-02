@@ -11,4 +11,5 @@ public record Employee(
     boolean active,
     OffsetDateTime createdAt
 ) {
+
 }

@@ -1,14 +1,14 @@
 package org.barbershop.report.application;
 
-import org.barbershop.report.application.port.in.ReportUseCase;
-import org.barbershop.report.application.port.out.ReportRepositoryPort;
-import org.barbershop.report.domain.DailyReport;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Optional;
+import org.barbershop.report.application.port.in.ReportUseCase;
+import org.barbershop.report.application.port.out.ReportRepositoryPort;
+import org.barbershop.report.domain.DailyReport;
 
 @ApplicationScoped
 public class ReportService implements ReportUseCase {

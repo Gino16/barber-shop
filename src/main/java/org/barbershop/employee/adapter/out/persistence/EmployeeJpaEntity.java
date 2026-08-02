@@ -1,10 +1,17 @@
 package org.barbershop.employee.adapter.out.persistence;
 
-import org.barbershop.employee.domain.Employee;
-import org.barbershop.employee.domain.EmployeeRole;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import org.barbershop.employee.domain.Employee;
+import org.barbershop.employee.domain.EmployeeRole;
 
 @Entity
 @Table(name = "employees")

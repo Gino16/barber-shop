@@ -1,14 +1,14 @@
 package org.barbershop.audit.adapter.out.persistence;
 
-import org.barbershop.audit.application.AuditFilterQuery;
-import org.barbershop.audit.application.port.out.AuditRepositoryPort;
-import org.barbershop.audit.domain.AuditLog;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import java.time.ZoneOffset;
 import java.util.List;
+import org.barbershop.audit.application.AuditFilterQuery;
+import org.barbershop.audit.application.port.out.AuditRepositoryPort;
+import org.barbershop.audit.domain.AuditLog;
 
 @ApplicationScoped
 @Transactional
@@ -62,14 +62,16 @@ public class AuditPersistenceAdapter implements AuditRepositoryPort {
     }
 
     if (query.action() != null) {
-      if (!hql.isEmpty()) hql.append(" AND ");
+      if (!hql.isEmpty()) {
+        hql.append(" AND ");
+      }
       hql.append("action = ?").append(paramIndex);
       params = appendParam(params, query.action());
       paramIndex++;
     }
 
     PanacheQuery<AuditLogJpaEntity> q =
-        hql.isEmpty() ?  repository.findAll() : repository.find(hql.toString(), params);
+        hql.isEmpty() ? repository.findAll() : repository.find(hql.toString(), params);
     return q;
   }
 

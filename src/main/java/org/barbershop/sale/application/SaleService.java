@@ -1,12 +1,5 @@
 package org.barbershop.sale.application;
 
-import org.barbershop.audit.application.AuditLogger;
-import org.barbershop.audit.domain.AuditAction;
-import org.barbershop.common.pagination.PagedResponse;
-import org.barbershop.sale.application.port.in.SaleUseCase;
-import org.barbershop.sale.application.port.out.SaleRepositoryPort;
-import org.barbershop.sale.domain.Sale;
-import org.barbershop.sale.domain.SaleItem;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import java.time.OffsetDateTime;
@@ -15,6 +8,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import org.barbershop.audit.application.AuditLogger;
+import org.barbershop.audit.domain.AuditAction;
+import org.barbershop.common.pagination.PagedResponse;
+import org.barbershop.sale.application.port.in.SaleUseCase;
+import org.barbershop.sale.application.port.out.SaleRepositoryPort;
+import org.barbershop.sale.domain.Sale;
+import org.barbershop.sale.domain.SaleItem;
 
 @ApplicationScoped
 public class SaleService implements SaleUseCase {
@@ -33,7 +33,7 @@ public class SaleService implements SaleUseCase {
     page = page > 0 ? page : 1;
     pageSize = pageSize > 0 && pageSize <= 100 ? pageSize : 10;
     int offset = (page - 1) * pageSize;
-    
+
     var sales = repository.find(offset, pageSize);
     long total = repository.count();
     return new PagedResponse<>(sales, page, pageSize, total);
@@ -47,14 +47,14 @@ public class SaleService implements SaleUseCase {
   @Override
   public Sale create(SaleCommand command) {
     Double discount = command.discount() != null ? command.discount() : 0.0;
-    
+
     List<SaleItem> items = command.items().stream()
         .map(item -> new SaleItem(null, null, item.itemId(), item.quantity(), item.unitPrice(),
             item.quantity() * item.unitPrice()))
         .toList();
-    
+
     Double totalAmount = calculateTotal(items, discount);
-    
+
     Sale created = repository.save(new Sale(null, command.customerId(), command.employeeId(),
         command.paymentMethod(), totalAmount, discount, command.notes(), items,
         OffsetDateTime.now(ZoneOffset.UTC)));

@@ -1,11 +1,5 @@
 package org.barbershop.item.application;
 
-import org.barbershop.audit.application.AuditLogger;
-import org.barbershop.audit.domain.AuditAction;
-import org.barbershop.common.pagination.PagedResponse;
-import org.barbershop.item.application.port.in.ItemUseCase;
-import org.barbershop.item.application.port.out.ItemRepositoryPort;
-import org.barbershop.item.domain.Item;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import java.time.OffsetDateTime;
@@ -13,6 +7,12 @@ import java.time.ZoneOffset;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
+import org.barbershop.audit.application.AuditLogger;
+import org.barbershop.audit.domain.AuditAction;
+import org.barbershop.common.pagination.PagedResponse;
+import org.barbershop.item.application.port.in.ItemUseCase;
+import org.barbershop.item.application.port.out.ItemRepositoryPort;
+import org.barbershop.item.domain.Item;
 
 @ApplicationScoped
 public class ItemService implements ItemUseCase {
@@ -40,8 +40,9 @@ public class ItemService implements ItemUseCase {
 
   @Override
   public Item create(ItemCommand command) {
-    Item created = repository.save(new Item(null, command.name(), command.description(), command.category(),
-        command.active() == null || command.active(), OffsetDateTime.now(ZoneOffset.UTC)));
+    Item created = repository.save(
+        new Item(null, command.name(), command.description(), command.category(),
+            command.active() == null || command.active(), OffsetDateTime.now(ZoneOffset.UTC)));
     auditLogger.record("ITEM", created.id(), AuditAction.CREATE, null, values(created));
     return created;
   }
@@ -51,9 +52,11 @@ public class ItemService implements ItemUseCase {
     return repository.findById(id)
         .map(existing -> {
           Item updated = repository.save(new Item(existing.id(), command.name(),
-              command.description(), command.category(), command.active() == null || command.active(),
+              command.description(), command.category(),
+              command.active() == null || command.active(),
               existing.createdAt()));
-          auditLogger.record("ITEM", updated.id(), AuditAction.UPDATE, values(existing), values(updated));
+          auditLogger.record("ITEM", updated.id(), AuditAction.UPDATE, values(existing),
+              values(updated));
           return updated;
         });
   }

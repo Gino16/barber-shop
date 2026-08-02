@@ -1,7 +1,7 @@
 package org.barbershop.sale.application;
 
-import org.barbershop.sale.domain.PaymentMethod;
 import java.util.List;
+import org.barbershop.sale.domain.PaymentMethod;
 
 public record SaleCommand(
     Long customerId,
@@ -11,4 +11,5 @@ public record SaleCommand(
     String notes,
     List<SaleItemCommand> items
 ) {
+
 }

@@ -1,12 +1,20 @@
 package org.barbershop.audit.adapter.out.persistence;
 
-import org.barbershop.audit.domain.AuditAction;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import jakarta.persistence.*;
-import org.hibernate.annotations.ColumnTransformer;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import java.time.LocalDateTime;
 import java.util.Map;
+import org.barbershop.audit.domain.AuditAction;
+import org.hibernate.annotations.ColumnTransformer;
 
 @Entity
 @Table(name = "audit_log")
@@ -41,10 +49,13 @@ public class AuditLogJpaEntity {
   public LocalDateTime timestamp;
 
   @Transient
-  private static final ObjectMapper mapper = new ObjectMapper().registerModule(new JavaTimeModule());
+  private static final ObjectMapper mapper = new ObjectMapper().registerModule(
+      new JavaTimeModule());
 
   public Map<String, Object> getOldValues() {
-    if (oldValuesJson == null) return null;
+    if (oldValuesJson == null) {
+      return null;
+    }
     try {
       return mapper.readValue(oldValuesJson, Map.class);
     } catch (Exception e) {
@@ -61,7 +72,9 @@ public class AuditLogJpaEntity {
   }
 
   public Map<String, Object> getNewValues() {
-    if (newValuesJson == null) return null;
+    if (newValuesJson == null) {
+      return null;
+    }
     try {
       return mapper.readValue(newValuesJson, Map.class);
     } catch (Exception e) {

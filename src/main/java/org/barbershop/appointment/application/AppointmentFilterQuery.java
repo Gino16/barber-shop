@@ -1,7 +1,7 @@
 package org.barbershop.appointment.application;
 
-import org.barbershop.appointment.domain.AppointmentStatus;
 import java.time.LocalDate;
+import org.barbershop.appointment.domain.AppointmentStatus;
 
 public record AppointmentFilterQuery(
     LocalDate startDate,

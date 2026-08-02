@@ -1,14 +1,14 @@
 package org.barbershop.appointment.adapter.out.persistence;
 
-import org.barbershop.appointment.application.AppointmentFilterQuery;
-import org.barbershop.appointment.application.port.out.AppointmentRepositoryPort;
-import org.barbershop.appointment.domain.Appointment;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
+import org.barbershop.appointment.application.AppointmentFilterQuery;
+import org.barbershop.appointment.application.port.out.AppointmentRepositoryPort;
+import org.barbershop.appointment.domain.Appointment;
 
 @ApplicationScoped
 @Transactional
@@ -75,28 +75,36 @@ public class AppointmentPersistenceAdapter implements AppointmentRepositoryPort 
     }
 
     if (query.endDate() != null) {
-      if (!hql.isEmpty()) hql.append(" AND ");
+      if (!hql.isEmpty()) {
+        hql.append(" AND ");
+      }
       hql.append("CAST(scheduled_at AS date) <= ?").append(paramIndex);
       params = appendParam(params, query.endDate());
       paramIndex++;
     }
 
     if (query.employeeId() != null) {
-      if (!hql.isEmpty()) hql.append(" AND ");
+      if (!hql.isEmpty()) {
+        hql.append(" AND ");
+      }
       hql.append("employee_id = ?").append(paramIndex);
       params = appendParam(params, query.employeeId());
       paramIndex++;
     }
 
     if (query.customerId() != null) {
-      if (!hql.isEmpty()) hql.append(" AND ");
+      if (!hql.isEmpty()) {
+        hql.append(" AND ");
+      }
       hql.append("customer_id = ?").append(paramIndex);
       params = appendParam(params, query.customerId());
       paramIndex++;
     }
 
     if (query.status() != null) {
-      if (!hql.isEmpty()) hql.append(" AND ");
+      if (!hql.isEmpty()) {
+        hql.append(" AND ");
+      }
       hql.append("status = ?").append(paramIndex);
       params = appendParam(params, query.status());
       paramIndex++;

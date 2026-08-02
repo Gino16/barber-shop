@@ -8,9 +8,9 @@ import org.barbershop.api.model.CustomerRequest;
 import org.barbershop.api.model.CustomerResponse;
 import org.barbershop.api.model.PaginatedCustomersResponse;
 import org.barbershop.api.model.PaginationResponse;
+import org.barbershop.common.pagination.PagedResponse;
 import org.barbershop.customer.application.CustomerCommand;
 import org.barbershop.customer.application.CustomerFilterQuery;
-import org.barbershop.common.pagination.PagedResponse;
 import org.barbershop.customer.application.port.in.CustomerUseCase;
 import org.barbershop.customer.domain.Customer;
 

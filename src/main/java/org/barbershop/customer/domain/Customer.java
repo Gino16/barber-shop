@@ -10,4 +10,5 @@ public record Customer(
     String address,
     OffsetDateTime createdAt
 ) {
+
 }

@@ -14,4 +14,5 @@ public record Sale(
     List<SaleItem> items,
     OffsetDateTime soldAt
 ) {
+
 }

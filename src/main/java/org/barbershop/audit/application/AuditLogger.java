@@ -1,13 +1,13 @@
 package org.barbershop.audit.application;
 
-import org.barbershop.audit.application.port.out.AuditRepositoryPort;
-import org.barbershop.audit.domain.AuditAction;
-import org.barbershop.audit.domain.AuditLog;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.Map;
+import org.barbershop.audit.application.port.out.AuditRepositoryPort;
+import org.barbershop.audit.domain.AuditAction;
+import org.barbershop.audit.domain.AuditLog;
 
 @ApplicationScoped
 public class AuditLogger {

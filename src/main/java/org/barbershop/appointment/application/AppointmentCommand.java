@@ -1,7 +1,7 @@
 package org.barbershop.appointment.application;
 
-import org.barbershop.appointment.domain.AppointmentStatus;
 import java.time.OffsetDateTime;
+import org.barbershop.appointment.domain.AppointmentStatus;
 
 public record AppointmentCommand(
     Long customerId,
@@ -10,4 +10,5 @@ public record AppointmentCommand(
     String notes,
     AppointmentStatus status
 ) {
+
 }

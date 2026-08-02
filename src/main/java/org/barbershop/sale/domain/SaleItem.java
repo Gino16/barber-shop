@@ -8,4 +8,5 @@ public record SaleItem(
     Double unitPrice,
     Double subtotalAmount
 ) {
+
 }

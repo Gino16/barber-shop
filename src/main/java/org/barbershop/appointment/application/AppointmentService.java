@@ -1,14 +1,5 @@
 package org.barbershop.appointment.application;
 
-import org.barbershop.audit.application.AuditLogger;
-import org.barbershop.audit.domain.AuditAction;
-import org.barbershop.appointment.application.port.in.AppointmentUseCase;
-import org.barbershop.appointment.application.port.out.AppointmentRepositoryPort;
-import org.barbershop.appointment.domain.Appointment;
-import org.barbershop.appointment.domain.AppointmentStatus;
-import org.barbershop.common.pagination.PagedResponse;
-import org.barbershop.customer.application.port.out.CustomerRepositoryPort;
-import org.barbershop.employee.application.port.out.EmployeeRepositoryPort;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.NotFoundException;
@@ -17,6 +8,15 @@ import java.time.ZoneOffset;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Optional;
+import org.barbershop.appointment.application.port.in.AppointmentUseCase;
+import org.barbershop.appointment.application.port.out.AppointmentRepositoryPort;
+import org.barbershop.appointment.domain.Appointment;
+import org.barbershop.appointment.domain.AppointmentStatus;
+import org.barbershop.audit.application.AuditLogger;
+import org.barbershop.audit.domain.AuditAction;
+import org.barbershop.common.pagination.PagedResponse;
+import org.barbershop.customer.application.port.out.CustomerRepositoryPort;
+import org.barbershop.employee.application.port.out.EmployeeRepositoryPort;
 
 @ApplicationScoped
 public class AppointmentService implements AppointmentUseCase {
@@ -43,7 +43,8 @@ public class AppointmentService implements AppointmentUseCase {
     AppointmentFilterQuery validatedQuery = query.withDefaults();
     var appointments = repository.find(validatedQuery);
     long total = repository.count(validatedQuery);
-    return new PagedResponse<>(appointments, validatedQuery.page(), validatedQuery.pageSize(), total);
+    return new PagedResponse<>(appointments, validatedQuery.page(), validatedQuery.pageSize(),
+        total);
   }
 
   @Override
@@ -54,9 +55,11 @@ public class AppointmentService implements AppointmentUseCase {
   @Override
   public Appointment create(AppointmentCommand command) {
     validateReferences(command);
-    AppointmentStatus status = command.status() != null ? command.status() : AppointmentStatus.SCHEDULED;
-    Appointment created = repository.save(new Appointment(null, command.customerId(), command.employeeId(),
-        command.scheduledAt(), command.notes(), status, OffsetDateTime.now(ZoneOffset.UTC)));
+    AppointmentStatus status =
+        command.status() != null ? command.status() : AppointmentStatus.SCHEDULED;
+    Appointment created = repository.save(
+        new Appointment(null, command.customerId(), command.employeeId(),
+            command.scheduledAt(), command.notes(), status, OffsetDateTime.now(ZoneOffset.UTC)));
     auditLogger.record("APPOINTMENT", created.id(), AuditAction.CREATE, null, values(created));
     return created;
   }
@@ -66,10 +69,13 @@ public class AppointmentService implements AppointmentUseCase {
     return repository.findById(id)
         .map(existing -> {
           validateReferences(command);
-          AppointmentStatus status = command.status() != null ? command.status() : existing.status();
+          AppointmentStatus status =
+              command.status() != null ? command.status() : existing.status();
           Appointment updated = repository.save(new Appointment(existing.id(), command.customerId(),
-              command.employeeId(), command.scheduledAt(), command.notes(), status, existing.createdAt()));
-          auditLogger.record("APPOINTMENT", updated.id(), AuditAction.UPDATE, values(existing), values(updated));
+              command.employeeId(), command.scheduledAt(), command.notes(), status,
+              existing.createdAt()));
+          auditLogger.record("APPOINTMENT", updated.id(), AuditAction.UPDATE, values(existing),
+              values(updated));
           return updated;
         });
   }
@@ -79,7 +85,8 @@ public class AppointmentService implements AppointmentUseCase {
     return repository.findById(id)
         .map(existing -> {
           repository.delete(id);
-          auditLogger.record("APPOINTMENT", existing.id(), AuditAction.DELETE, values(existing), null);
+          auditLogger.record("APPOINTMENT", existing.id(), AuditAction.DELETE, values(existing),
+              null);
           return null;
         });
   }

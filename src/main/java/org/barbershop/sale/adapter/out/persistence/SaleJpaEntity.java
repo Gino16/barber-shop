@@ -1,12 +1,19 @@
 package org.barbershop.sale.adapter.out.persistence;
 
-import org.barbershop.sale.domain.Sale;
-import org.barbershop.sale.domain.SaleItem;
-import org.barbershop.sale.domain.PaymentMethod;
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
+import org.barbershop.sale.domain.PaymentMethod;
+import org.barbershop.sale.domain.Sale;
+import org.barbershop.sale.domain.SaleItem;
 
 @Entity
 @Table(name = "sales")

@@ -15,4 +15,5 @@ public record DailyReport(
     Double productsSales,
     OffsetDateTime generatedAt
 ) {
+
 }

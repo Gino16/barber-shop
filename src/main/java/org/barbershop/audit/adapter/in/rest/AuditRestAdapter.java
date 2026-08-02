@@ -9,10 +9,10 @@ import org.barbershop.api.model.AuditLogResponse.ActionEnum;
 import org.barbershop.api.model.PaginatedAuditLogsResponse;
 import org.barbershop.api.model.PaginationResponse;
 import org.barbershop.audit.application.AuditFilterQuery;
-import org.barbershop.common.pagination.PagedResponse;
 import org.barbershop.audit.application.port.in.AuditUseCase;
 import org.barbershop.audit.domain.AuditAction;
 import org.barbershop.audit.domain.AuditLog;
+import org.barbershop.common.pagination.PagedResponse;
 
 @ApplicationScoped
 public class AuditRestAdapter implements AuditLogsApi {
