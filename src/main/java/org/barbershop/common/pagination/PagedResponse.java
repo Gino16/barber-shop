@@ -13,6 +13,6 @@ public record PagedResponse<T>(
 
   public PagedResponse(List<T> data, int page, int pageSize, long total) {
     this(data, page, pageSize, total, (int) Math.ceil((double) total / pageSize),
-        (long) page * pageSize + pageSize < total);
+        (long) page * pageSize < total);
   }
 }

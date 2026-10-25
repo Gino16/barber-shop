@@ -96,4 +96,20 @@ class PagedResponseTest {
     // Assert
     assertTrue(response.hasNextPage());
   }
+
+  @Test
+  @DisplayName("ReturnHasNextPage_WhenSecondPageStillHasRemainingItems")
+  void shouldReturnHasNextPageWhenSecondPageStillHasRemainingItems() {
+    // Arrange
+    List<String> data = List.of();
+    int page = 2;
+    int pageSize = 10;
+    long total = 25;
+
+    // Act
+    PagedResponse<String> response = new PagedResponse<>(data, page, pageSize, total);
+
+    // Assert
+    assertTrue(response.hasNextPage());
+  }
 }

@@ -28,8 +28,9 @@ public class ItemPersistenceAdapter implements ItemRepositoryPort {
 
   @Override
   public List<Item> find(ItemFilterQuery query) {
-    return buildQuery(query)
-        .range(query.offset(), query.offset() + query.pageSize() - 1)
+    ItemFilterQuery validatedQuery = query.withDefaults();
+    return buildQuery(validatedQuery)
+        .range(validatedQuery.offset(), validatedQuery.offset() + validatedQuery.pageSize() - 1)
         .stream()
         .map(ItemJpaEntity::toDomain)
         .toList();
@@ -37,7 +38,7 @@ public class ItemPersistenceAdapter implements ItemRepositoryPort {
 
   @Override
   public long count(ItemFilterQuery query) {
-    return buildQuery(query).count();
+    return buildQuery(query.withDefaults()).count();
   }
 
   @Transactional
@@ -67,8 +68,9 @@ public class ItemPersistenceAdapter implements ItemRepositoryPort {
     int paramIndex = 1;
 
     if (query.search() != null && !query.search().isBlank()) {
-      hql.append("name ILIKE ?").append(paramIndex).append(" OR description ILIKE ?")
+      hql.append("(name ILIKE ?").append(paramIndex).append(" OR description ILIKE ?")
           .append(paramIndex);
+      hql.append(")");
       params = new Object[]{"%" + query.search() + "%"};
       paramIndex++;
     }
@@ -91,7 +93,24 @@ public class ItemPersistenceAdapter implements ItemRepositoryPort {
       paramIndex++;
     }
 
-    return hql.isEmpty() ? panache.findAll() : panache.find(hql.toString(), params);
+    if (!hql.isEmpty()) {
+      hql.append(" ");
+    }
+    hql.append("ORDER BY ")
+        .append(resolveSortBy(query.sortBy()))
+        .append(" ")
+        .append("desc".equalsIgnoreCase(query.sortDirection()) ? "DESC" : "ASC");
+
+    return panache.find(hql.toString(), params);
+  }
+
+  private String resolveSortBy(String sortBy) {
+    return switch (sortBy) {
+      case "name" -> "name";
+      case "category" -> "category";
+      case "createdAt" -> "createdAt";
+      default -> "id";
+    };
   }
 
   private Object[] appendParam(Object[] params, Object newParam) {

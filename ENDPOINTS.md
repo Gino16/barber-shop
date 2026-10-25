@@ -50,7 +50,8 @@ Filtros disponibles:
 | Audit logs | `entityType`, `action=CREATE|UPDATE|DELETE`, `page`, `pageSize` |
 
 Los estados válidos de una cita son `SCHEDULED`, `PENDING`, `IN_PROGRESS`, `COMPLETED` y
-`CANCELLED`. La implementación asigna `PENDING` cuando la petición no proporciona estado.
+`CANCELLED`. La implementación actual asigna `SCHEDULED` cuando la petición no proporciona
+estado.
 
 ## Payloads principales
 
@@ -113,7 +114,7 @@ Los estados válidos de una cita son `SCHEDULED`, `PENDING`, `IN_PROGRESS`, `COM
   "items": [
     {
       "itemId": 1,
-      "quantity": 1,
+      "quantity": 1
     }
   ]
 }

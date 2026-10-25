@@ -1,5 +1,7 @@
 package org.barbershop.item.adapter.out.persistence;
 
+import io.quarkus.hibernate.orm.panache.PanacheQuery;
+import org.barbershop.item.application.ItemFilterQuery;
 import org.barbershop.item.domain.Item;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +15,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -108,5 +111,24 @@ class ItemPersistenceAdapterTest {
     assertEquals("Corte moderno", entity.description);
     assertEquals(Item.Category.SERVICE, entity.category);
     assertTrue(entity.active);
+  }
+
+  @Test
+  @DisplayName("ApplySortingClause_WhenFindCalledWithSortParams")
+  @SuppressWarnings("unchecked")
+  void shouldApplySortingClauseWhenFindCalledWithSortParams() {
+    // Arrange
+    ItemFilterQuery query =
+        new ItemFilterQuery(null, null, null, 1, 10, "name", "desc");
+    PanacheQuery<ItemJpaEntity> mockQuery = mock(PanacheQuery.class);
+    when(panache.find(anyString(), any(Object[].class))).thenReturn(mockQuery);
+    when(mockQuery.range(anyInt(), anyInt())).thenReturn(mockQuery);
+    when(mockQuery.stream()).thenReturn(Stream.of());
+
+    // Act
+    adapter.find(query);
+
+    // Assert
+    verify(panache).find(contains("ORDER BY name DESC"), any(Object[].class));
   }
 }

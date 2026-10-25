@@ -69,8 +69,8 @@ public class EmployeePersistenceAdapter implements EmployeeRepositoryPort {
     int paramIndex = 1;
 
     if (query.search() != null && !query.search().isBlank()) {
-      hql.append("name ILIKE ?").append(paramIndex).append(" OR phone ILIKE ?").append(paramIndex)
-          .append(" OR email ILIKE ?").append(paramIndex);
+      hql.append("(name ILIKE ?").append(paramIndex).append(" OR phone ILIKE ?")
+          .append(paramIndex).append(" OR email ILIKE ?").append(paramIndex).append(")");
       params = new Object[]{"%" + query.search() + "%"};
       paramIndex++;
     }
@@ -88,7 +88,7 @@ public class EmployeePersistenceAdapter implements EmployeeRepositoryPort {
       if (!hql.isEmpty()) {
         hql.append(" AND ");
       }
-      hql.append("is_active = ?").append(paramIndex);
+      hql.append("active = ?").append(paramIndex);
       params = appendParam(params, query.active());
       paramIndex++;
     }

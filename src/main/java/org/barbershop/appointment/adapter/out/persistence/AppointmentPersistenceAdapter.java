@@ -69,7 +69,7 @@ public class AppointmentPersistenceAdapter implements AppointmentRepositoryPort 
     int paramIndex = 1;
 
     if (query.startDate() != null) {
-      hql.append("CAST(scheduled_at AS date) >= ?").append(paramIndex);
+      hql.append("CAST(scheduledAt AS date) >= ?").append(paramIndex);
       params = appendParam(params, query.startDate());
       paramIndex++;
     }
@@ -78,7 +78,7 @@ public class AppointmentPersistenceAdapter implements AppointmentRepositoryPort 
       if (!hql.isEmpty()) {
         hql.append(" AND ");
       }
-      hql.append("CAST(scheduled_at AS date) <= ?").append(paramIndex);
+      hql.append("CAST(scheduledAt AS date) <= ?").append(paramIndex);
       params = appendParam(params, query.endDate());
       paramIndex++;
     }
@@ -87,7 +87,7 @@ public class AppointmentPersistenceAdapter implements AppointmentRepositoryPort 
       if (!hql.isEmpty()) {
         hql.append(" AND ");
       }
-      hql.append("employee_id = ?").append(paramIndex);
+      hql.append("employeeId = ?").append(paramIndex);
       params = appendParam(params, query.employeeId());
       paramIndex++;
     }
@@ -96,7 +96,7 @@ public class AppointmentPersistenceAdapter implements AppointmentRepositoryPort 
       if (!hql.isEmpty()) {
         hql.append(" AND ");
       }
-      hql.append("customer_id = ?").append(paramIndex);
+      hql.append("customerId = ?").append(paramIndex);
       params = appendParam(params, query.customerId());
       paramIndex++;
     }

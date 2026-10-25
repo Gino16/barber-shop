@@ -68,12 +68,13 @@ public class CustomerPersistenceAdapter implements CustomerRepositoryPort {
     int paramIndex = 1;
 
     if (query.search() != null && !query.search().isBlank()) {
-      hql.append("name ILIKE ?")
+      hql.append("(name ILIKE ?")
           .append(paramIndex)
           .append(" OR phone ILIKE ?")
           .append(paramIndex)
           .append(" OR email ILIKE ?")
-          .append(paramIndex);
+          .append(paramIndex)
+          .append(")");
       params = new Object[]{"%" + query.search() + "%"};
       paramIndex++;
     }
